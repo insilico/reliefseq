@@ -38,7 +38,7 @@ BirdseedData.cpp DatasetInstance.cpp AttributeRanker.cpp ChiSquared.cpp \
 ReliefF.cpp RReliefF.cpp SNReliefF.cpp ReliefFSeq.cpp ReliefSeqController.cpp
 
 # libtool libraries
-reliefseq_static_LDFLAGS = -all-static -static-libgcc -static-libstdc++
+reliefseq_static_LDFLAGS = -all-static -static-libgcc
 reliefseq_static_LDADD = $(my_ld_flags) $(my_ld_paths)
 
 # additional include paths to support the library headers

@@ -60,7 +60,10 @@ ReliefSeqController::ReliefSeqController(Dataset* ds, po::variables_map& vm,
 	analysisType = anaType;
 
 	// set the number of target attributes
-	numTargetAttributes = vm["num-target"].as<unsigned int>();
+	numTargetAttributes = 0;
+	if(vm.count("num-target")) {
+		numTargetAttributes = vm["num-target"].as<unsigned int>();
+	}
 	if (numTargetAttributes == 0) {
 		numTargetAttributes = ds->NumVariables();
 		numToRemovePerIteration = 0;
@@ -70,7 +73,7 @@ ReliefSeqController::ReliefSeqController(Dataset* ds, po::variables_map& vm,
 				<< "number of attributes in the data set" << endl;
 		exit(EXIT_FAILURE);
 	}
-	cout << Timestamp() << "reliefseq is removing attributes until best "
+	cout << Timestamp() << "ReliefSeq is removing attributes until best "
 			<< numTargetAttributes << " remain" << endl;
 
 	/// set the relief algorithm

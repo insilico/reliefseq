@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 	string birdseedExcludeSnpsFilename = "";
 	string altPhenotypeFilename = "";
 	string outputDatasetFilename = "";
-	string outputFilesPrefix = "ec_run";
+	string outputFilesPrefix = "reliefseq_default";
 	string distanceMatrixFilename = "";
 	string gainMatrixFilename = "";
 	string titvFilename = "";
@@ -131,12 +131,12 @@ int main(int argc, char** argv) {
 		)
 		(
 		"num-target,t",
-		po::value<unsigned int>(&reliefNumTarget)->default_value(reliefNumTarget),
+		po::value<unsigned int>(&reliefNumTarget),
 		"target number of attributes to keep after backwards selection"
 		)
 		(
 		"iter-remove-n,r",
-		po::value<unsigned int>(&reliefIterNumToRemove)->default_value(reliefIterNumToRemove),
+		po::value<unsigned int>(&reliefIterNumToRemove),
 		"number of attributes to remove per iteration of backwards selection"
 		)
 		(
