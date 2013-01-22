@@ -6,10 +6,8 @@ LIBNAME=@LIBNAME@
 
 ACLOCAL_AMFLAGS="-Im4"
 
-my_include_paths = -I$(top_srcdir)
-
-AM_CXXFLAGS = $(CXXFLAGS) -I$(my_include_paths) $(BOOST_CPPFLAGS)
-AM_CXXFLAGS += -DHAVE__BOOL  -D__NOPLUGIN__
+AM_CXXFLAGS = $(CXXFLAGS) -I$(top_srcdir) $(BOOST_CPPFLAGS)
+# AM_CXXFLAGS += -DHAVE__BOOL  -D__NOPLUGIN__
 AM_FFLAGS = $(my_include_paths) -x f77-cpp-input
 
 my_ld_flags = $(LDFLAGS) -lgsl -lgslcblas $(BOOST_PROGRAM_OPTIONS_LIBS) @FLIBS@
@@ -34,6 +32,7 @@ BirdseedData.h DatasetInstance.h AttributeRanker.h ChiSquared.h \
 ReliefF.h RReliefF.h SNReliefF.h ReliefFSeq.h ReliefSeqController.h
 
 # libtool libraries
+reliefseq_LDFLAGS = -fopenmp
 reliefseq_LDADD = $(my_ld_flags) $(my_ld_paths)
 
 reliefseq_static_SOURCES=ReliefSeqCLI.cpp Insilico.cpp DistanceMetrics.cpp \
@@ -48,7 +47,7 @@ BirdseedData.h DatasetInstance.h AttributeRanker.h ChiSquared.h \
 ReliefF.h RReliefF.h SNReliefF.h ReliefFSeq.h ReliefSeqController.h
 
 # libtool libraries
-reliefseq_static_LDFLAGS = -all-static -static-libgcc
+reliefseq_static_LDFLAGS = -fopenmp -all-static -static-libgcc
 reliefseq_static_LDADD = $(my_ld_flags) $(my_ld_paths)
 
 # additional include paths to support the library headers

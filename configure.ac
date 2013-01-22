@@ -72,8 +72,8 @@ AC_MSG_NOTICE([--------------------------------------------------])
 AC_CHECK_LIB([gomp], [GOMP_parallel_loop_dynamic_start],
     [], AC_MSG_ERROR(test for OpenMP failed))
 LDFLAGS="$LDFLAGS -lgomp"
-CXXFLAGS="-fopenmp $CXXFLAGS"
-CPPFLAGS="-fopenmp $CPPFLAGS"
+CXXFLAGS="$CXXFLAGS -O2"
+CPPFLAGS=""
 
 AC_CHECK_LIB(pthread, pthread_create)
 LDFLAGS="$LDFLAGS -lpthread"
