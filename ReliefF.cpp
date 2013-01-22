@@ -18,7 +18,6 @@
 #include <omp.h>
 
 #include <boost/program_options.hpp>
-#include <boost/unordered_map.hpp>
 
 #include "ReliefF.h"
 #include "Dataset.h"
@@ -886,125 +885,6 @@ bool ReliefF::PreComputeDistances() {
 	}
 	delete[] distanceMatrix;
 	cout << " done" << endl;
-
-	return true;
-}
-
-bool ReliefF::PreComputeDistancesByMap() {
-
-	cout << Timestamp() << "Precomputing instance distances by map" << endl;
-	map<string, unsigned int> instanceMask = dataset->MaskGetInstanceMask();
-	vector<string> instanceIds = dataset->MaskGetInstanceIds();
-	int numInstances = instanceIds.size();
-
-	cout << Timestamp()
-			<< "1) Computing instance-to-instance distances in parallel... ";
-	boost::unordered_map<pair<string, string>, double> distanceMatrix;
-	//        ID1     ID2     dist
-	int i = 0;
-#ifdef WITH_OPENMP
-#pragma omp parallel for schedule(dynamic, 1)
-#endif
-	for (i = 0; i < numInstances; ++i) {
-		for (int j = i + 1; j < numInstances; ++j) {
-			string instanceId1 = instanceIds[i];
-			string instanceId2 = instanceIds[j];
-			unsigned int dsi1Index = instanceMask[instanceId1];
-			unsigned int dsi2Index = instanceMask[instanceId2];
-			pair<string, string> key = make_pair(instanceId1, instanceId2);
-			pair<string, string> symkey = make_pair(instanceId2, instanceId1);
-			double distance = dataset->ComputeInstanceToInstanceDistance(
-					dataset->GetInstance(dsi1Index),
-					dataset->GetInstance(dsi2Index));
-#ifdef WITH_OPENMP
-#pragma omp critical
-#endif
-			{
-				distanceMatrix[key] = distance;
-				//        cout << i << "," << j << " -> (" << key.first << "," << key.second
-				//             << ") => " << distanceMatrix[key] << endl;
-			}
-		}
-		if (i && (i % 100 == 0)) {
-			cout << Timestamp() << i << "/" << numInstances << endl;
-		}
-	}
-	cout << Timestamp() << numInstances << "/" << numInstances << " done"
-			<< endl;
-
-	if (dataset->HasContinuousPhenotypes()) {
-		cout << Timestamp()
-				<< "2) Calculating continuous phenotype nearest neighbors... ";
-	} else {
-		// multiclass - 12/1/11
-		if (dataset->NumClasses() > 2) {
-			cout << Timestamp()
-					<< "2) Calculating same and different classes nearest neighbors... ";
-		} else {
-			cout << Timestamp()
-					<< "2) Calculating same and different class nearest neighbors... ";
-		}
-	}
-
-	pair<string, string> key;
-	DistancePair nnInfo;
-	double instanceToInstanceDistance;
-	for (i = 0; i < numInstances; ++i) {
-		unsigned int thisInstanceIndex = instanceMask[instanceIds[i]];
-		DatasetInstance* thisInstance = dataset->GetInstance(thisInstanceIndex);
-		if (dataset->HasContinuousPhenotypes()) {
-			DistancePairs instanceDistances;
-			for (int j = 0; j < numInstances; ++j) {
-				if (i == j)
-					continue;
-				if (j < i) {
-					key = make_pair(instanceIds[j], instanceIds[i]);
-				} else {
-					key = make_pair(instanceIds[i], instanceIds[j]);
-				}
-				instanceToInstanceDistance = distanceMatrix[key];
-				nnInfo = make_pair(instanceToInstanceDistance, instanceIds[j]);
-				instanceDistances.push_back(nnInfo);
-			}
-			thisInstance->SetDistanceSums(k, instanceDistances);
-		} else {
-			ClassLevel thisClass = thisInstance->GetClass();
-			DistancePairs sameSums;
-			// changed to an array for multiclass - 12/1/11
-			map<ClassLevel, DistancePairs> diffSums;
-			for (int j = 0; j < numInstances; ++j) {
-				if (i == j)
-					continue;
-				if (j < i) {
-					key = make_pair(instanceIds[j], instanceIds[i]);
-				} else {
-					key = make_pair(instanceIds[i], instanceIds[j]);
-				}
-				instanceToInstanceDistance = distanceMatrix[key];
-				unsigned int otherInstanceIndex = instanceMask[instanceIds[j]];
-				DatasetInstance* otherInstance = dataset->GetInstance(
-						otherInstanceIndex);
-				nnInfo = make_pair(instanceToInstanceDistance, instanceIds[j]);
-				if (otherInstance->GetClass() == thisClass) {
-					sameSums.push_back(nnInfo);
-				} else {
-					ClassLevel otherClass = otherInstance->GetClass();
-					diffSums[otherClass].push_back(nnInfo);
-				}
-			}
-			thisInstance->SetDistanceSums(k, sameSums, diffSums);
-		}
-
-		if (i % 100 == 0) {
-			cout << Timestamp() << i << "/" << numInstances << endl;
-		}
-	}
-	cout << Timestamp() << numInstances << "/" << numInstances << " done"
-			<< endl;
-
-	cout << Timestamp() << "3) Calculating weight by distance factors for "
-			<< "nearest neighbors... " << endl;
-	ComputeWeightByDistanceFactors();
 
 	return true;
 }

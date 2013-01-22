@@ -26,7 +26,12 @@ reliefseq_SOURCES = ReliefSeqCLI.cpp Insilico.cpp DistanceMetrics.cpp \
 Statistics.cpp Dataset.cpp ArffDataset.cpp \
 PlinkDataset.cpp  PlinkBinaryDataset.cpp PlinkRawDataset.cpp DgeData.cpp \
 BirdseedData.cpp DatasetInstance.cpp AttributeRanker.cpp ChiSquared.cpp \
-ReliefF.cpp RReliefF.cpp SNReliefF.cpp ReliefFSeq.cpp ReliefSeqController.cpp
+ReliefF.cpp RReliefF.cpp SNReliefF.cpp ReliefFSeq.cpp ReliefSeqController.cpp \
+config.h GSLRandomBase.h GSLRandomFlat.h Insilico.h DistanceMetrics.h \
+Statistics.h Dataset.h ArffDataset.h StringUtils.h BestN.h \
+PlinkDataset.h  PlinkBinaryDataset.h PlinkRawDataset.h DgeData.h \
+BirdseedData.h DatasetInstance.h AttributeRanker.h ChiSquared.h \
+ReliefF.h RReliefF.h SNReliefF.h ReliefFSeq.h ReliefSeqController.h
 
 # libtool libraries
 reliefseq_LDADD = $(my_ld_flags) $(my_ld_paths)
@@ -35,7 +40,12 @@ reliefseq_static_SOURCES=ReliefSeqCLI.cpp Insilico.cpp DistanceMetrics.cpp \
 Statistics.cpp Dataset.cpp ArffDataset.cpp \
 PlinkDataset.cpp  PlinkBinaryDataset.cpp PlinkRawDataset.cpp DgeData.cpp \
 BirdseedData.cpp DatasetInstance.cpp AttributeRanker.cpp ChiSquared.cpp \
-ReliefF.cpp RReliefF.cpp SNReliefF.cpp ReliefFSeq.cpp ReliefSeqController.cpp
+ReliefF.cpp RReliefF.cpp SNReliefF.cpp ReliefFSeq.cpp ReliefSeqController.cpp \
+config.h GSLRandomBase.h GSLRandomFlat.h Insilico.h DistanceMetrics.h \
+Statistics.h Dataset.h ArffDataset.h StringUtils.h BestN.h \
+PlinkDataset.h  PlinkBinaryDataset.h PlinkRawDataset.h DgeData.h \
+BirdseedData.h DatasetInstance.h AttributeRanker.h ChiSquared.h \
+ReliefF.h RReliefF.h SNReliefF.h ReliefFSeq.h ReliefSeqController.h
 
 # libtool libraries
 reliefseq_static_LDFLAGS = -all-static -static-libgcc

@@ -41,21 +41,21 @@ ReliefFSeq::ReliefFSeq(Dataset* ds, po::variables_map& vm) :
 	mode = "snr";
 	snrMode = "snr";
 	tstatMode = "pval";
-	if(vm.count("ec-seq-algorithm-mode")) {
-		mode = vm["ec-seq-algorithm-mode"].as<string>();
+	if(vm.count("seq-algorithm-mode")) {
+		mode = vm["seq-algorithm-mode"].as<string>();
 		if((mode == "snr") || (mode == "tstat")) {
 			cout << Timestamp() << "ReliefFSeq mode set to: " << mode << endl;
-			if((mode == "snr") && vm.count("ec-seq-snr-mode")) {
-				snrMode = vm["ec-seq-snr-mode"].as<string>();
+			if((mode == "snr") && vm.count("seq-snr-mode")) {
+				snrMode = vm["seq-snr-mode"].as<string>();
 				if((snrMode != "snr") && (snrMode != "relieff")) {
 					cerr << "ERROR: Unrecognized ReliefFSeq SNR mode: " << snrMode << endl;
 					exit(EXIT_FAILURE);
 				}
 				cout << Timestamp() << "ReliefFSeq SNR mode set to: " << snrMode << endl;
 			}
-			if((mode == "tstat") && vm.count("ec-seq-tstat-mode")) {
-				tstatMode = vm["ec-seq-tstat-mode"].as<string>();
-				if((tstatMode != "pval") && (tstatMode != "abst")) {
+			if((mode == "tstat") && vm.count("seq-tstat-mode")) {
+				tstatMode = vm["seq-tstat-mode"].as<string>();
+				if((tstatMode != "pval") && (tstatMode != "abst") && (tstatMode != "rawt")) {
 					cerr << "ERROR: Unrecognized ReliefFSeq t-statistic mode: " << tstatMode << endl;
 					exit(EXIT_FAILURE);
 				}
@@ -70,8 +70,8 @@ ReliefFSeq::ReliefFSeq(Dataset* ds, po::variables_map& vm) :
 
 	/// set the s0 value
 	s0 = 0.05;
-	if(vm.count("ec-seq-algorithm-s0")) {
-		s0 = vm["ec-seq-algorithm-s0"].as<double>();
+	if(vm.count("seq-algorithm-s0")) {
+		s0 = vm["seq-algorithm-s0"].as<double>();
 		if((s0 >= 0) || (s0 <= 1.0)) {
 			cout << Timestamp() << "ReliefFSeq s0 set to: " << s0 << endl;
 		}
@@ -91,11 +91,11 @@ ReliefFSeq::ReliefFSeq(Dataset* ds, ConfigMap& configMap) :
 	mode = "snr";
 	snrMode = "snr";
 	tstatMode = "pval";
-	if(GetConfigValue(configMap, "ec-seq-algorithm-mode", configValue)) {
+	if(GetConfigValue(configMap, "seq-algorithm-mode", configValue)) {
 		mode = configValue;
 		if((mode == "snr") || (mode == "tstat")) {
 			cout << Timestamp() << "ReliefFSeq mode set to: " << mode << endl;
-			if((mode == "snr") && GetConfigValue(configMap, "ec-seq-snr-mode", configValue)) {
+			if((mode == "snr") && GetConfigValue(configMap, "seq-snr-mode", configValue)) {
 				snrMode = configValue;
 				if((snrMode != "snr") && (snrMode != "relieff")) {
 					cerr << "ERROR: Unrecognized ReliefFSeq SNR mode: " << snrMode << endl;
@@ -103,9 +103,9 @@ ReliefFSeq::ReliefFSeq(Dataset* ds, ConfigMap& configMap) :
 				}
 				cout << Timestamp() << "ReliefFSeq SNR mode set to: " << snrMode << endl;
 			}
-			if((mode == "tstat") && GetConfigValue(configMap, "ec-seq-tstat-mode", configValue)) {
+			if((mode == "tstat") && GetConfigValue(configMap, "seq-tstat-mode", configValue)) {
 				tstatMode = configValue;
-				if((tstatMode != "pval") && (tstatMode != "abst")) {
+				if((tstatMode != "pval") && ((tstatMode != "abst") || (tstatMode != "rawt"))) {
 					cerr << "ERROR: Unrecognized ReliefFSeq t-statistic mode: " << tstatMode << endl;
 					exit(EXIT_FAILURE);
 				}
@@ -120,7 +120,7 @@ ReliefFSeq::ReliefFSeq(Dataset* ds, ConfigMap& configMap) :
 
 	/// set the s0 value
 	s0 = 0.05;
-	if(GetConfigValue(configMap, "ec-seq-algorithm-s0", configValue)) {
+	if(GetConfigValue(configMap, "seq-algorithm-s0", configValue)) {
 		s0 = lexical_cast<double>(configValue);
 		if((s0 >= 0) || (s0 <= 1.0)) {
 			cout << Timestamp() << "ReliefFSeq s0 set to: " << s0 << endl;
@@ -150,8 +150,8 @@ bool ReliefFSeq::ComputeAttributeScores() {
 	// using pseudo-code notation from white board discussion - 7/21/12
 	// changed to use Brett's email (7/21/12) equations - 7/23/12
 	cout << Timestamp() << "Running ReliefFSeq algorithm" << endl;
-	//	vector<string> numNames;
-	//	numNames = dataset->GetNumericsNames();
+	vector<string> numNames;
+	numNames = dataset->GetNumericsNames();
 	vector<unsigned int> numericIndices =
 			dataset->MaskGetAttributeIndices(NUMERIC_TYPE);
 	// DEBUG
@@ -160,6 +160,7 @@ bool ReliefFSeq::ComputeAttributeScores() {
 	//	outFile << "gene\tmuMiss\tmuHit\tsigmaMiss\tsigmaHit\tnum\tden\tdms0\tsnr" << endl;
 
 	/// run this loop on as many cores as possible through OpenMP
+	cout << setprecision(8);
 #pragma omp parallel for
 	for (unsigned int numIdx = 0; numIdx < numericIndices.size();
 			++numIdx) {
@@ -172,7 +173,6 @@ bool ReliefFSeq::ComputeAttributeScores() {
 				muDeltaHitAlpha, muDeltaMissAlpha);
 		double sigmaDeltaHitAlpha = sigmaDeltaAlphas.first;
 		double sigmaDeltaMissAlpha = sigmaDeltaAlphas.second;
-
 		double snrNum = 0.0, snrDen = 0.0;
 		double tstatNum = 0.0, tstatDen = 0.0;
 		double alphaWeight = 0.0;
@@ -208,6 +208,11 @@ bool ReliefFSeq::ComputeAttributeScores() {
 			tstatDen = pooledStdDev * sqrt((1.0 / n1) + (1.0 / n2));
 			// make into a t-statistic and use for pvalue
 			double t = tstatNum / (tstatDen + s0);
+//#pragma omp critical
+//			cout << numNames[numIdx]
+//					<< "\t" << muDeltaMissAlpha << "\t" << muDeltaHitAlpha
+//					<< "\t" << sigmaDeltaMissAlpha << "\t" << sigmaDeltaHitAlpha
+//					<< "\t" << tstatNum << "\t" << tstatDen << "\t" << t << endl;
 			double df =  n1 + n2 - 2;
 			double gslPval = 1.0;
 			if(t < 0) {
@@ -216,13 +221,20 @@ bool ReliefFSeq::ComputeAttributeScores() {
 			else {
 				gslPval = gsl_cdf_tdist_P(t, df);
 			}
+			// assign the variable a weight for ReliefF
 			if(tstatMode == "pval") {
 				// use 1-pvalue as the attribute scrore
 				alphaWeight = 1.0 - (2.0 * (1.0 - gslPval));
 			}
 			else {
-				// use absolute value of the t statistic as the weight
-				alphaWeight = fabs(t);
+				if(tstatMode == "abst") {
+					// use absolute value of the t statistic as the weight
+					alphaWeight = fabs(t);
+				}
+				else {
+					// use raw value of the t statistic as the weight
+					alphaWeight = t;
+				}
 			}
 		}
 	

@@ -115,9 +115,9 @@ int main(int argc, char** argv) {
 		"Relief algorithm mode (relieff|reliefseq)"
 		)
 		(
-		"seq-algorithm-s0",
-		po::value<double>(&reliefSeqAlgorithmS0)->default_value(reliefSeqAlgorithmS0),
-		"Seq interaction algorithm s0 (0.0 <= s0 <= 1.0)"
+		"seq-algorithm-mode",
+		po::value<string>(&reliefSeqAlgorithmMode)->default_value(reliefSeqAlgorithmMode),
+		"Relief algorithm mode (snr|tstat)"
 		)
 		(
 		"seq-snr-mode",
@@ -127,7 +127,12 @@ int main(int argc, char** argv) {
 		(
 		"seq-tstat-mode",
 		po::value<string>(&reliefSeqTstatMode)->default_value(reliefSeqTstatMode),
-		"Seq interaction algorithm t-statistic mode (pval|abst)"
+		"Seq interaction algorithm t-statistic mode (pval|abst|rawt)"
+		)
+		(
+		"seq-algorithm-s0",
+		po::value<double>(&reliefSeqAlgorithmS0)->default_value(reliefSeqAlgorithmS0),
+		"Seq interaction algorithm s0 (0.0 <= s0 <= 1.0)"
 		)
 		(
 		"num-target,t",

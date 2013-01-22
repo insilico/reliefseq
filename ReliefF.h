@@ -78,8 +78,6 @@ public:
   void WriteAttributeScores(std::string baseFilename);
   /// Precompute all pairwise instance-to-instance distances.
   bool PreComputeDistances();
-  /// Precompute all pairwise distances honoring excluded instances.
-  bool PreComputeDistancesByMap();
   /// Overrides base class method.
   AttributeScores GetScores();
   /// Implements AttributeRanker interface.

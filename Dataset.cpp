@@ -2883,7 +2883,7 @@ pair<string, string> Dataset::GetDistanceMetrics() {
 
 pair<unsigned int, unsigned int> Dataset::GetAttributeTiTvCounts() {
 	vector<unsigned int> attrIndices = MaskGetAttributeIndices(DISCRETE_TYPE);
-	double tiCount = 0, tvCount = 0;
+	unsigned int tiCount = 0, tvCount = 0;
 	for (unsigned int aIdx = 0; aIdx < attrIndices.size(); aIdx++) {
 		if (attributeMutationTypes[aIdx] == TRANSITION_MUTATION) {
 			++tiCount;
