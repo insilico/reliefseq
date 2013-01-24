@@ -147,7 +147,7 @@ bool ReliefSeqController::ComputeScores() {
 		cout << Timestamp()
 				<< "----------------------------------------------------"
 				<< "-------------------------" << endl;
-		cout << Timestamp() << "EC algorithm...iteration: " << iteration
+		cout << Timestamp() << "Reliefseq algorithm...iteration: " << iteration
 				<< ", working attributes: " << numWorkingAttributes
 				<< ", target attributes: " << numTargetAttributes << endl;
 		cout << Timestamp()
