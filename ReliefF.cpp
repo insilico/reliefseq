@@ -158,7 +158,7 @@ ReliefF::ReliefF(Dataset* ds, po::variables_map& vm, AnalysisType anaType):
 	if (vm.count("iter-remove-n")) {
 		removePerIteration = vm["iter-remove-n"].as<unsigned int>();
 		if ((removePerIteration < 1)
-				|| (removePerIteration >= dataset->NumAttributes())) {
+				|| (removePerIteration >= dataset->NumVariables())) {
 			cerr << "ERROR: Number to remove per iteration ["
 					<< removePerIteration << "] not in valid range" << endl;
 			exit(-1);
@@ -169,10 +169,10 @@ ReliefF::ReliefF(Dataset* ds, po::variables_map& vm, AnalysisType anaType):
 	if (vm.count("iter-remove-percent")) {
 		doRemovePercent = true;
 		removePercentage = vm["iter-remove-percent"].as<unsigned int>() / 100.0;
-		removePerIteration = (unsigned int) ((double) dataset->NumAttributes()
+		removePerIteration = (unsigned int) ((double) dataset->NumVariables()
 				* removePercentage + 0.5);
 		if ((removePerIteration < 1)
-				|| (removePerIteration >= dataset->NumAttributes())) {
+				|| (removePerIteration >= dataset->NumVariables())) {
 			cerr << "ERROR: Number to remove per iteratopn ["
 					<< removePerIteration << "] not in valid range" << endl;
 			exit(-1);

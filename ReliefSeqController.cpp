@@ -59,6 +59,48 @@ ReliefSeqController::ReliefSeqController(Dataset* ds, po::variables_map& vm,
 	paramsMap = vm;
 	analysisType = anaType;
 
+	/// set the relief algorithm
+	algorithmMode = paramsMap["algorithm-mode"].as<string>();
+	if(algorithmMode == "relieff") {
+    if(ds->HasContinuousPhenotypes()) {
+      cout << Timestamp() << "Constructing Regression ReliefF..." << endl;
+      reliefseqAlgorithm = new RReliefF(ds, vm);
+    }
+    else {
+      cout << Timestamp() << "Constructing Standard ReliefF..." << endl;
+      reliefseqAlgorithm = new ReliefF(ds, vm, anaType);
+    }
+	}
+	else {
+		if(algorithmMode == "reliefseq") {
+      cout << Timestamp() << "Constructing ReliefSeq..." << endl;
+			reliefseqAlgorithm = new ReliefFSeq(ds, vm);
+		}
+		else {
+			cerr << "ERROR: unrecognized ReliefSeq algorithm mode: "
+					<< algorithmMode << endl;
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	outFilesPrefix = paramsMap["out-files-prefix"].as<string>();
+
+	// set the number of attributes to remove per iteration
+	numToRemovePerIteration = 0;
+	if (paramsMap.count("iter-remove-n")) {
+		numToRemovePerIteration = paramsMap["iter-remove-n"].as<unsigned int>();
+	}
+	if (paramsMap.count("iter-remove-percent")) {
+		unsigned int iterPercentToRemove =
+				paramsMap["iter-remove-percent"].as<unsigned int>();
+    cout << Timestamp() << "Iteratively removing " << iterPercentToRemove 
+            << " percent" << endl;
+		numToRemovePerIteration = (unsigned int) (((double) iterPercentToRemove
+				/ 100.0) * dataset->NumVariables());
+	}
+	cout << Timestamp() << "ReliefSeq will remove " << numToRemovePerIteration
+			<< " attributes on first iteration" << endl;
+
 	// set the number of target attributes
 	numTargetAttributes = 0;
 	if(vm.count("num-target")) {
@@ -75,38 +117,6 @@ ReliefSeqController::ReliefSeqController(Dataset* ds, po::variables_map& vm,
 	}
 	cout << Timestamp() << "ReliefSeq is removing attributes until best "
 			<< numTargetAttributes << " remain" << endl;
-
-	/// set the relief algorithm
-	algorithmMode = paramsMap["algorithm-mode"].as<string>();
-	if(algorithmMode == "relieff") {
-		reliefseqAlgorithm = new ReliefF(ds, vm, anaType);
-	}
-	else {
-		if(algorithmMode == "reliefseq") {
-			reliefseqAlgorithm = new ReliefFSeq(ds, vm);
-		}
-		else {
-			cerr << "ERROR: unrecognized Relief algorithm mode: "
-					<< algorithmMode << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	outFilesPrefix = paramsMap["out-files-prefix"].as<string>();
-
-	// set the number of attributes to remove per iteration
-	numToRemovePerIteration = 0;
-	if (paramsMap.count("iter-remove-n")) {
-		numToRemovePerIteration = paramsMap["iter-remove-n"].as<unsigned int>();
-	}
-	if (paramsMap.count("iter-remove-percent")) {
-		unsigned int iterPercentToRemove =
-				paramsMap["iter-remove-percent"].as<unsigned int>();
-		numToRemovePerIteration = (unsigned int) (((double) iterPercentToRemove
-				/ 100.0) * dataset->NumAttributes());
-	}
-	cout << Timestamp() << "ReliefSeq will remove " << numToRemovePerIteration
-			<< " attributes on first iteration" << endl;
 
 	// multicore setup
 	unsigned int maxThreads = omp_get_num_procs();
