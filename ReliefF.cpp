@@ -182,6 +182,17 @@ ReliefF::ReliefF(Dataset* ds, po::variables_map& vm, AnalysisType anaType):
 				<< endl;
 	}
 
+	if(vm.count("normalize-scores")) {
+		if(vm["normalize-scores"].as<unsigned int>()) {
+			normalizeScores = true;
+			cout << Timestamp() << "Scores will be normalized" << endl;
+		}
+		else {
+			normalizeScores = false;
+			cout << Timestamp() << "Scores will not be normalized" << endl;
+		}
+	}
+	
 	cout << Timestamp() << "Number of samples: m = " << m << endl;
 	randomlySelect = true;
 	if (m == 0 || m == ds->NumInstances()) {

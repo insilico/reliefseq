@@ -54,3 +54,7 @@ void AttributeRanker::PrintScores(ofstream& outStream) {
 double AttributeRanker::GetClassificationError() {
 	return classificationAccuracy;
 }
+
+bool AttributeRanker::DoNormalize() {
+	return normalizeScores;
+}

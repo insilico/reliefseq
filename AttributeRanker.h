@@ -46,6 +46,8 @@ public:
 	virtual void PrintScores(std::ofstream& outStream);
   /// Error from using ranked attributes in a classifier.
 	virtual double GetClassificationError();
+		/// Should ReliefF scores be normalized
+	bool DoNormalize();
 protected:
   /// The Dataset on which the ranking algorithm is working.
   Dataset* dataset;
@@ -53,6 +55,9 @@ protected:
   AttributeScores scores;
   /// Error from using ranked attributes in a classifier.
   double classificationAccuracy;
+	/// Normalize scores 0-1?
+	bool normalizeScores;
+
 };
 
 #endif

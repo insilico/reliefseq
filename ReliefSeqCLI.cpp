@@ -71,7 +71,8 @@ int main(int argc, char** argv) {
 	unsigned int reliefIterPercentToRemove = 0;
 	// numeric data parameters
 	string numericTransform = "";
-
+	unsigned int normalizeScores = 1;
+	
   /// declare the supported options
   po::options_description desc("Allowed options");
   desc.add_options()
@@ -148,6 +149,11 @@ int main(int argc, char** argv) {
 		"iter-remove-percent,p",
 		po::value<unsigned int>(&reliefIterPercentToRemove),
 		"percentage of attributes to remove per iteration of backwards selection"
+		)
+		(
+		"normalize-scores",
+		po::value<unsigned int>(&normalizeScores),
+		"normalize ReliefF scores? (0|1)"
 		)
 		(
 		"out-dataset-filename,O",

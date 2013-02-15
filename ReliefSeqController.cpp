@@ -297,12 +297,17 @@ bool ReliefSeqController::RunReliefF() {
 		}
 	}
 
+	if(!reliefseqAlgorithm->DoNormalize()) {
+		return true;
+	}
+
 	// normalize attribute scores if necessary
 	if (minRFScore == maxRFScore) {
 		cout << Timestamp() << "WARNING: Relief-F min and max scores are the same. "
 				<< "No normalization necessary" << endl;
 		return true;
 	}
+	
 
 	AttributeScores newRFScores;
 	double rfRange = maxRFScore - minRFScore;
