@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
 	unsigned int reliefIterPercentToRemove = 0;
 	// numeric data parameters
 	string numericTransform = "";
-	unsigned int normalizeScores = 1;
+	unsigned int normalizeScores = 0;
 	
   /// declare the supported options
   po::options_description desc("Allowed options");
