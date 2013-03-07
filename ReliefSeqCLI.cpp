@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
 		)
 		(
 		"normalize-scores",
-		po::value<unsigned int>(&normalizeScores),
+		po::value<unsigned int>(&normalizeScores)->default_value(normalizeScores),
 		"normalize ReliefF scores? (0|1)"
 		)
 		(
