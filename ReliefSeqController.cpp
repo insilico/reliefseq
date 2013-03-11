@@ -218,8 +218,8 @@ bool ReliefSeqController::ComputeScores() {
 //      return false;
 			break;
 		}
-		cout << Timestamp() << "Removing the worst " << numToRemove << " attributes"
-				<< endl;
+		cout << Timestamp() << "Removing the worst " << numToRemove 
+						<< " attributes" << endl;
 		if (!RemoveWorstAttributes(numToRemove)) {
 			cerr << "ERROR: RemoveWorstAttribute failed" << endl;
 			return false;
@@ -233,6 +233,34 @@ bool ReliefSeqController::ComputeScores() {
 
 	cout << Timestamp() << "ReliefSeq ran for " << iteration << " iterations"
 			<< endl;
+
+	return true;
+}
+
+bool ReliefSeqController::ComputeScoresKopt() {
+	// find kmax
+	map<ClassLevel, vector<unsigned int> > classIdxMap = 
+		dataset->GetClassIndexes();
+	map<ClassLevel, vector<unsigned int> >::const_iterator mit = 
+		classIdxMap.begin();
+	unsigned int minClassCount = mit->second.size();
+	++mit;
+	for(; mit != classIdxMap.end(); ++mit) {
+		if(mit->second.size() < minClassCount) {
+			minClassCount = mit->second.size();
+		}
+	}
+	unsigned int kmax = minClassCount - 1;
+	
+	unsigned int thisK = 1;
+	while(thisK <= kmax) {
+		cout << Timestamp() << "Running ReliefSeq for k=" << thisK << endl;
+		if (!RunReliefF()) {
+			cerr << "ERROR: ReliefF failed. Exiting." << endl;
+			return false;
+		}
+		++thisK;
+	}
 
 	return true;
 }

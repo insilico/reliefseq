@@ -136,11 +136,30 @@ ReliefF::ReliefF(Dataset* ds, po::variables_map& vm, AnalysisType anaType):
 	} else {
 		m = dataset->NumInstances();
 	}
+
 	if (vm.count("k-nearest-neighbors")) {
-		SetK(vm["k-nearest-neighbors"].as<unsigned int>());
+		string kString = vm["k-nearest-neighbors"].as<string>();
+		if(kString == "opt") {
+			SetK(0);
+		}
+		else {
+			SetK(vm["k-nearest-neighbors"].as<unsigned int>());
+		}
 	} else {
 		SetK(10);
 	}
+	if(k) {
+		cout << Timestamp() << "Number of nearest neighbors: k = " << k << endl;
+		// k nearest neighbors and m randomly selected instances
+		// spread differences and thus weight updates
+		// over (m x k) iterations
+		one_over_m_times_k = 1.0 / (((double) m) * ((double) k));
+		//                              m        *       k
+	}
+	else {
+		cout << Timestamp() << "k nearest neighbors will be optimized" << endl;
+	}
+
 	snpMetric = "gm";
 	if (vm.count("snp-metric")) {
 		snpMetric = vm["snp-metric"].as<string>();
@@ -173,7 +192,7 @@ ReliefF::ReliefF(Dataset* ds, po::variables_map& vm, AnalysisType anaType):
 				* removePercentage + 0.5);
 		if ((removePerIteration < 1)
 				|| (removePerIteration >= dataset->NumVariables())) {
-			cerr << "ERROR: Number to remove per iteratopn ["
+			cerr << "ERROR: Number to remove per iteration ["
 					<< removePerIteration << "] not in valid range" << endl;
 			exit(-1);
 		}
@@ -205,14 +224,6 @@ ReliefF::ReliefF(Dataset* ds, po::variables_map& vm, AnalysisType anaType):
 		cout << Timestamp() << "Sampling instances randomly" << endl;
 		randomlySelect = true;
 	}
-
-	cout << Timestamp() << "Number of nearest neighbors: k = " << k << endl;
-
-	// k nearest neighbors and m randomly selected instances
-	// spread differences and thus weight updates
-	// over (m x k) iterations
-	one_over_m_times_k = 1.0 / (((double) m) * ((double) k));
-	//                                  m           *                  k
 
 	/// set the SNP metric function pointer
 	bool snpMetricFunctionUnset = true;
@@ -312,10 +323,27 @@ ReliefF::ReliefF(Dataset* ds, ConfigMap& configMap, AnalysisType anaType):
 		m = dataset->NumInstances();
 	}
 	if (GetConfigValue(configMap, "k-nearest-neighbors", configValue)) {
-		SetK(lexical_cast<unsigned int>(configValue));
+		if(configValue != "opt") {
+			SetK(lexical_cast<unsigned int>(configValue));
+		}
+		else {
+			SetK(0);
+		}
 	} else {
 		SetK(10);
 	}
+	if(k) {
+		cout << Timestamp() << "Number of nearest neighbors: k = " << k << endl;
+		// k nearest neighbors and m randomly selected instances
+		// spread differences and thus weight updates
+		// over (m x k) iterations
+		one_over_m_times_k = 1.0 / (((double) m) * ((double) k));
+		//                               m       *           k
+	}
+	else {
+		cout << Timestamp() << "k nearest neighbors will be optimized" << endl;
+	}
+	
 	if (GetConfigValue(configMap, "snp-metric", configValue)) {
 		snpMetric = configValue;
 	} else {
@@ -376,13 +404,7 @@ ReliefF::ReliefF(Dataset* ds, ConfigMap& configMap, AnalysisType anaType):
 		randomlySelect = true;
 	}
 
-	cout << Timestamp() << "Number of nearest neighbors: k = " << k << endl;
 
-	// k nearest neighbors and m randomly selected instances
-	// spread differences and thus weight updates
-	// over (m x k) iterations
-	one_over_m_times_k = 1.0 / (((double) m) * ((double) k));
-	//                                  m           *                  k
 
 	/// set the SNP metric function pointer
 	bool snpMetricFunctionUnset = true;

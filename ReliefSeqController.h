@@ -31,6 +31,8 @@ public:
 	virtual ~ReliefSeqController();
 	/// Compute the scores based on the current set of attributes.
 	bool ComputeScores();
+	/// Compute scores based on optimum k
+	bool ComputeScoresKopt();
 	/// Get the last computed scores.
 	AttributeScores& GetScores();
 	/// Return the algorithm mode.

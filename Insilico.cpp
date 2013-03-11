@@ -279,10 +279,18 @@ bool GetMatchingIds(string numericsFilename, string altPhenotypeFilename,
 			return false;
 		}
 		matchingIds.resize(int(goodIdsIt - matchingIds.begin()));
+		if(matchingIds.size() < 2) {
+			cerr << "Matching IDs less than 2" << endl;
+			return false;
+		}
 	} else {
 		if (numericsFilename != "") {
 			cout << Timestamp() << "IDs come from the numerics file" << endl;
 			matchingIds.resize(numericsIds.size());
+			if(matchingIds.size() < 2) {
+				cerr << "Matching IDs less than 2" << endl;
+				return false;
+			}
 			copy(numericsIds.begin(), numericsIds.end(), matchingIds.begin());
 			// copy(numericsIds.begin(), numericsIds.end(), ostream_iterator<string > (cout, "\n"));
 		} else {
@@ -291,6 +299,10 @@ bool GetMatchingIds(string numericsFilename, string altPhenotypeFilename,
 						<< endl;
 				// PrintVector(phenoIds, "phenoIds");
 				matchingIds.resize(phenoIds.size());
+				if(matchingIds.size() < 2) {
+					cerr << "Matching IDs less than 2" << endl;
+					return false;
+				}
 				copy(phenoIds.begin(), phenoIds.end(), matchingIds.begin());
 			} else {
 				cout << Timestamp() << "IDs are not needed for this analysis" << endl;
