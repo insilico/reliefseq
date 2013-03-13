@@ -594,6 +594,8 @@ public:
   std::pair<RandomJungleTreeType, std::string> DetermineTreeType();
   /// Dump the SNP transition/transversion information to file
   bool WriteSnpTiTvInfo(std::string titvFilename);
+	/// Reset instances nearest neighbor information.
+	bool ResetNearestNeighbors();
 protected:
   /*************************************************************************//**
    * Load SNPs from file using the data set filename.

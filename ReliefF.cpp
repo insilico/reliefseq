@@ -474,6 +474,7 @@ bool ReliefF::ComputeAttributeScores() {
   PreComputeDistances();
 
   /// algorithm line 1
+	W.clear();
   W.resize(dataset->NumVariables(), 0.0);
 
   // pointer to the instance being sampled
@@ -648,6 +649,8 @@ bool ReliefF::ComputeAttributeScores() {
 }
 
 bool ReliefF::ComputeAttributeScoresIteratively() {
+  // final scores after all iterations
+  std::map<std::string, double> finalScores;
 
   // save the current dataset mask
   dataset->MaskPushAll();
@@ -734,9 +737,7 @@ void ReliefF::PrintAttributeScores(ofstream & outFile) {
   vector<double>::const_iterator scoresIt = W.begin();
   unsigned int nameIdx = 0;
   for(; scoresIt != W.end(); ++scoresIt) {
-    outFile << fixed << setprecision(6) << *scoresIt << "\t"
-            << scoreNames[nameIdx] << endl;
-    //    outFile << fixed << *scoresIt << "\t" << scoreNames[nameIdx] << endl;
+    outFile << *scoresIt << "\t" << scoreNames[nameIdx] << endl;
     ++nameIdx;
   }
 }

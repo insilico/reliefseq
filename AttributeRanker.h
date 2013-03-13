@@ -48,8 +48,10 @@ public:
 	virtual void PrintScores(std::ofstream& outStream);
   /// Error from using ranked attributes in a classifier.
 	virtual double GetClassificationError();
-		/// Should ReliefF scores be normalized
+	/// Should ReliefF scores be normalized.
 	bool DoNormalize();
+	/// Reset the algorithm.
+	virtual bool ResetForNextIteration() = 0;
 protected:
   /// The Dataset on which the ranking algorithm is working.
   Dataset* dataset;

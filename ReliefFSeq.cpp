@@ -160,7 +160,6 @@ bool ReliefFSeq::ComputeAttributeScores() {
 	//	outFile << "gene\tmuMiss\tmuHit\tsigmaMiss\tsigmaHit\tnum\tden\tdms0\tsnr" << endl;
 
 	/// run this loop on as many cores as possible through OpenMP
-	cout << setprecision(8);
 #pragma omp parallel for
 	for (unsigned int numIdx = 0; numIdx < numericIndices.size();
 			++numIdx) {

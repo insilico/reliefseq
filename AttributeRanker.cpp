@@ -44,10 +44,7 @@ void AttributeRanker::WriteScores(string baseFilename) {
 void AttributeRanker::PrintScores(ofstream& outStream) {
 	for (AttributeScoresCIt scoresIt = scores.begin(); scoresIt != scores.end();
 			++scoresIt) {
-		// TODO: save and restore output precision
-		outStream << fixed << setprecision(8)
-				<< scoresIt->first << "\t"
-				<< scoresIt->second << endl;
+		outStream << scoresIt->first << "\t" << scoresIt->second << endl;
 	}
 }
 

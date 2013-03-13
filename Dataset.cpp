@@ -1762,8 +1762,7 @@ void Dataset::WriteLevelCounts(std::string levelsFilename) {
 			thisMinorAllele = attributeMinorAllele[attrIdx];
 			thisAttrAlleles = attributeAlleles[attrIdx];
 			outFile << thisAttrAlleles.first << "\t" << thisAttrAlleles.second
-					<< "\t" << fixed << setprecision(5)
-					<< thisMinorAllele.second;
+					<< "\t" << thisMinorAllele.second;
 		}
 
 		map<AttributeLevel, unsigned int>::const_iterator itsIt =
@@ -2522,11 +2521,11 @@ void Dataset::AttributeInteractionInformation() {
 		for (rdIt = thisResults.begin(); rdIt != thisResults.end(); rdIt++) {
 			string metric = rdIt->first;
 			if (metric == "I(A;B|C)") {
-				cout << fixed << setw(10) << setprecision(3) << rdIt->second
+				cout << fixed << setw(10) << rdIt->second
 						<< setw(10) << "( "
 						<< ((rdIt->second / metricSum) * 100) << "% )";
 			} else {
-				cout << fixed << setw(10) << setprecision(3) << rdIt->second;
+				cout << fixed << setw(10) << rdIt->second;
 			}
 		}
 		cout << endl;
@@ -2966,6 +2965,19 @@ bool Dataset::WriteSnpTiTvInfo(string titvFilename) {
 
 	return true;
 }
+
+bool Dataset::ResetNearestNeighbors() {
+	cout << Timestamp() 
+					<< "INFO: Dataset is clearing instance nearest neighbor information"
+					<< endl;
+	map<string, unsigned int>::const_iterator it = instancesMask.begin();
+	for (; it != instancesMask.end(); ++it) {
+		instances[it->second]->ResetNearestNeighbors();
+	}	
+	
+	return true;
+}
+
 
 bool Dataset::CalculateDistanceMatrix(double** distanceMatrix,
 		string matrixFilename) {

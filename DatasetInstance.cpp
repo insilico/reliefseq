@@ -337,3 +337,11 @@ bool DatasetInstance::GetNNearestInstances(unsigned int n,
   return true;
 }
 
+bool DatasetInstance::ResetNearestNeighbors() {
+	bestNeighborIdsSameClass.clear();
+	bestNeighborIdsDiffClass.clear();
+	bestNeighborIds.clear();
+	
+	return true;
+}
+

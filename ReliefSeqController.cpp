@@ -162,7 +162,6 @@ bool ReliefSeqController::ComputeScores() {
             << " transversions: " << titvCounts.second
             << " ratio: " << titvRatio
             << endl;
-    cout << fixed << setprecision(1);
 
     // -------------------------------------------------------------------------
     cout << Timestamp() << "Running ReliefF" << endl;
@@ -170,7 +169,6 @@ bool ReliefSeqController::ComputeScores() {
       cerr << "ERROR: ReliefF failed. Exiting." << endl;
       return false;
     }
-    cout << setprecision(1);
     cout << Timestamp() << "ReliefF finished in " << t.elapsed() << " secs"
             << endl;
     if(numWorkingAttributes == numTargetAttributes) {
@@ -294,19 +292,19 @@ bool ReliefSeqController::ComputeScoresKopt() {
   vector<map<string, double> > allScores;
   vector<unsigned int> koptValues;
   for(unsigned int thisK = koptBegin; thisK <= koptEnd; thisK += koptStep) {
-    reliefseqAlgorithm->SetK(thisK);
-    scores.clear();
-    koptValues.push_back(thisK);
     // run ReliefF on this k
     cout << Timestamp() << "--------------------------" << endl;
     cout << Timestamp() << "Running ReliefSeq for k=" << thisK << endl;
-//    if(!RunReliefF()) {
-//      cerr << "ERROR: ReliefF failed. Exiting." << endl;
-//      return false;
-//    }
+    reliefseqAlgorithm->SetK(thisK);
+    koptValues.push_back(thisK);
+    scores.clear();
+		dataset->ResetNearestNeighbors();
     scores = reliefseqAlgorithm->ComputeScores();
     sort(scores.begin(), scores.end(), scoresSortDesc);
-    // PrintScores();
+		stringstream filePrefix;
+		filePrefix << thisK;
+		WriteAttributeScores(filePrefix.str());
+    PrintScores();
     
     // keep all scores by attribute name
     map<string, double> thisKScores;
@@ -358,8 +356,7 @@ string ReliefSeqController::GetAlgorithmMode() {
 void ReliefSeqController::PrintAttributeScores(ofstream& outStream) {
   for(AttributeScoresCIt scoresIt = scores.begin(); scoresIt != scores.end();
           ++scoresIt) {
-    outStream << fixed << setprecision(8) << (*scoresIt).first << "\t"
-            << (*scoresIt).second << endl;
+    outStream << (*scoresIt).first << "\t" << (*scoresIt).second << endl;
   }
 }
 

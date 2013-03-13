@@ -147,6 +147,8 @@ public:
   std::vector<AttributeLevel> attributes;
   /// continuous attributes
   std::vector<NumericLevel> numerics;
+	/// Reset neighest neighbor information.
+	bool ResetNearestNeighbors();
 private:
   /// pointer to a Dataset object
   Dataset* dataset;

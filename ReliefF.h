@@ -133,8 +133,6 @@ protected:
   std::vector<double> W;
   /// attribute names associated with scores
   std::vector<std::string> scoreNames;
-  /// final scores after all iterations
-  std::map<std::string, double> finalScores;
 };
 
 #endif
