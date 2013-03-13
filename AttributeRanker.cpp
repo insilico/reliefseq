@@ -58,3 +58,40 @@ double AttributeRanker::GetClassificationError() {
 bool AttributeRanker::DoNormalize() {
 	return normalizeScores;
 }
+
+bool AttributeRanker::SetK(unsigned int newK) {
+  map<ClassLevel, vector<unsigned int> > classLevels =
+          dataset->GetClassIndexes();
+  map<ClassLevel, vector<unsigned int> >::const_iterator ciIt;
+  unsigned int minSampleCount = dataset->NumInstances();
+  unsigned int maxSampleCount = 0;
+  for(ciIt = classLevels.begin(); ciIt != classLevels.end(); ++ciIt) {
+    if(ciIt->second.size() < minSampleCount) {
+      minSampleCount = ciIt->second.size();
+    }
+    if(ciIt->second.size() > maxSampleCount) {
+      maxSampleCount = ciIt->second.size();
+    }
+  }
+
+  if(minSampleCount < newK) {
+    cout << Timestamp() << "WARNING: Minimum class size " << minSampleCount
+            << " is less than k " << newK << endl;
+    cout << Timestamp() << "WARNING: Setting k nearest neighbors to " <<
+            minSampleCount << endl;
+    k = minSampleCount;
+  } else {
+    if(newK > maxSampleCount) {
+      cout << Timestamp() << "WARNING: Maximum class size " << maxSampleCount
+              << " is less than k " << newK << endl;
+      cout << Timestamp() << "WARNING: Setting k nearest neighbors to " <<
+              maxSampleCount - 1 << endl;
+      k = maxSampleCount - 1;
+    }
+    else {
+      k = newK;
+    }
+  }
+
+  return true;
+}

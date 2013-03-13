@@ -53,7 +53,10 @@ int main(int argc, char** argv) {
 	string diagnosticLogFilename = "";
 	string diagnosticLevelsCountsFilename = "";
 	// ReliefF
-	string k = "10";
+	unsigned int k = 10;
+  unsigned int koptBegin = 1;
+  unsigned int koptEnd = 1;
+  unsigned int koptStep = 1;
 	unsigned int m = 0;
 	string snpMetric = "gm";
 	string snpMetricNN = "gm";
@@ -192,8 +195,23 @@ int main(int argc, char** argv) {
 		)
 		(
 		"k-nearest-neighbors,k",
-		po::value<string>(&k)->default_value(k),
-		"set k nearest neighbors (opt=sweep all possible k values 1-max NN)"
+		po::value<unsigned int>(&k)->default_value(k),
+		"set k nearest neighbors (0=optimize k)"
+		)
+		(
+		"kopt-begin",
+		po::value<unsigned int>(&koptBegin)->default_value(koptBegin),
+		"optimize k starting with kopt-begin"
+		)
+		(
+		"kopt-end",
+		po::value<unsigned int>(&koptEnd)->default_value(koptEnd),
+		"optimize k ending with kopt-end"
+		)
+		(
+		"kopt-step",
+		po::value<unsigned int>(&koptStep)->default_value(koptStep),
+		"optimize k incrementing with kopt-step"
 		)
 		(
 		"number-random-samples,m",
@@ -737,8 +755,7 @@ int main(int argc, char** argv) {
 	// FINALLY! run the algorithm
 	cout << Timestamp() << "Running ReliefSeq" << endl;
 	ReliefSeqController rsc(ds, vm, analysisType);
-	string kString = vm["k-nearest-neighbors"].as<string>();
-	if(kString == "opt") {
+	if(k == 0) {
 		if(!rsc.ComputeScoresKopt()) {
 			cerr << "ERROR: Failed to calculate optimum k ReliefSeq scores" << endl;
 			exit(EXIT_FAILURE);

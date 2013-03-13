@@ -29,6 +29,8 @@ public:
 
   /// Compute the attribute scores for the current set of attributes.
   virtual AttributeScores ComputeScores() = 0;
+  /// Set k nearest neighbors, with bounds checking
+  virtual bool SetK(unsigned int newK);
   /*************************************************************************//**
    * Get the (importance) scores as a vector of pairs: score, attribute name
    * \return vector of pairs
@@ -57,7 +59,8 @@ protected:
   double classificationAccuracy;
 	/// Normalize scores 0-1?
 	bool normalizeScores;
-
+  /// k nearest neighbors
+  unsigned int k;
 };
 
 #endif

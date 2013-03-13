@@ -82,8 +82,6 @@ public:
   AttributeScores GetScores();
   /// Implements AttributeRanker interface.
   AttributeScores ComputeScores();
-  /// Set k nearest neighbors, with bounds checking
-  bool SetK(unsigned int newK);
 private:
   /// no default constructor
   ReliefF();
@@ -116,14 +114,10 @@ protected:
   std::string snpMetric;
   /// the name of continuous diff(erence) function
   std::string numMetric;
-  /// nomalizing factor for ReliefF m * k loop
-  double one_over_m_times_k;
   /// number of instances to sample
   unsigned int m;
   /// are instances being randomly selected?
   bool randomlySelect;
-  /// k nearest neighbors
-  unsigned int k;
   /// number of attributes to remove each iteration if running iteratively
   unsigned int removePerIteration;
   /// are we removing a percentage per iteration?
