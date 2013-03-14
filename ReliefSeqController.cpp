@@ -301,10 +301,14 @@ bool ReliefSeqController::ComputeScoresKopt() {
 		dataset->ResetNearestNeighbors();
     scores = reliefseqAlgorithm->ComputeScores();
     sort(scores.begin(), scores.end(), scoresSortDesc);
-		stringstream filePrefix;
-		filePrefix << thisK;
-		WriteAttributeScores(filePrefix.str());
-    PrintScores();
+
+		// I/O
+    if(paramsMap.count("write-each-k-scores")) {
+      stringstream filePrefix;
+      filePrefix << outFilesPrefix << "." << thisK;
+      WriteAttributeScores(filePrefix.str());
+    }
+    // PrintScores();
     
     // keep all scores by attribute name
     map<string, double> thisKScores;
@@ -338,9 +342,10 @@ bool ReliefSeqController::ComputeScoresKopt() {
   }
 
   sort(scores.begin(), scores.end(), scoresSortDesc);
-
-  cout << Timestamp() << "Best Ks:" << endl;
-  PrintBestKs();
+  
+  if(paramsMap.count("write-best-k")) {
+    WriteBestKs(outFilesPrefix);
+  }
   
   return true;
 }
@@ -387,6 +392,26 @@ void ReliefSeqController::WriteAttributeScores(string baseFilename) {
   cout << Timestamp()
           << "Writing EC scores to [" + resultsFilename + "]" << endl;
   PrintAttributeScores(outFile);
+  outFile.close();
+}
+
+void ReliefSeqController::WriteBestKs(string baseFilename) {
+  string resultsFilename = baseFilename;
+  ofstream outFile;
+  resultsFilename = baseFilename + ".bestk";
+  outFile.open(resultsFilename.c_str());
+  if(outFile.bad()) {
+    cerr << "ERROR: Could not open scores file " << resultsFilename
+            << "for writing" << endl;
+    exit(1);
+  }
+  cout << Timestamp()
+          << "Writing reliefseq best k's to [" + resultsFilename + "]" << endl;
+  for(map<string, unsigned int>::const_iterator kIt = bestKs.begin();
+    kIt != bestKs.end(); ++kIt) {
+    outFile << kIt->first << "\t" << kIt->second << endl;
+  }
+
   outFile.close();
 }
 

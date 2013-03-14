@@ -43,6 +43,11 @@ public:
 	 ****************************************************************************/
   void WriteAttributeScores(std::string baseFilename);
   /*************************************************************************//**
+	 * Write the best k-nearest neighbors best k and attribute names to file.
+	 * \param [in] baseFilename filename to write best-k-attribute name pairs
+	 ****************************************************************************/
+  void WriteBestKs(std::string baseFilename);
+  /*************************************************************************//**
 	 * Write the scores and attribute names to stream.
 	 * \param [in] outStream stream to write score-attribute name pairs
 	 ****************************************************************************/

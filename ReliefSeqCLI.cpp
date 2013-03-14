@@ -82,6 +82,8 @@ int main(int argc, char** argv) {
 		("help", "produce help message")
 		("verbose", "verbose output")
 		("convert", "convert data set to data set - does not run reliefseq")
+		("write-best-k", "optimize k, write best k's")
+		("write-each-k-scores", "optimize k, write best scores for each k")
 		(
 		"config-file,c",
 		po::value<string>(&configFilename),
