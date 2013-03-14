@@ -188,7 +188,7 @@ int main(int argc, char** argv) {
 		(
 		"numeric-metric,N",
 		po::value<string > (&numMetric)->default_value(numMetric),
-		"metric for determining the difference between numeric attributes (manhattan=|euclidean)"
+		"metric for determining the difference between numeric attributes (manhattan|euclidean)"
 		)
 		(
 		"snp-exclusion-file,x",

@@ -2967,9 +2967,9 @@ bool Dataset::WriteSnpTiTvInfo(string titvFilename) {
 }
 
 bool Dataset::ResetNearestNeighbors() {
-	cout << Timestamp() 
-					<< "INFO: Dataset is clearing instance nearest neighbor information"
-					<< endl;
+//	cout << Timestamp() 
+//					<< "INFO: Dataset is clearing instance nearest neighbor
+//         	<< "information" << endl;
 	map<string, unsigned int>::const_iterator it = instancesMask.begin();
 	for (; it != instancesMask.end(); ++it) {
 		instances[it->second]->ResetNearestNeighbors();

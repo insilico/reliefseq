@@ -40,16 +40,15 @@ configure script.  From this point, a standard
 will generate the `Makefile`, compile and link the code, and copy the objects to
 the installation directory (default of `/usr/local`). 
 
-The resulting binary src/ec_static.exe will run as a command-line tool.
-
 ### Usage ###
 
-bwhite@newton:~/git/reliefseq$ reliefseq
-Allowed options:
   --help                                produce help message
   --verbose                             verbose output
   --convert                             convert data set to data set - does not
                                         run reliefseq
+  --write-best-k                        optimize k, write best k's
+  --write-each-k-scores                 optimize k, write best scores for each 
+                                        k
   -c [ --config-file ] arg              read configuration options from file - 
                                         command line overrides these
   -s [ --snp-data ] arg                 read SNP attributes from genotype 
@@ -69,19 +68,21 @@ Allowed options:
   -g [ --algorithm-mode ] arg (=relieff)
                                         Relief algorithm mode 
                                         (relieff|reliefseq)
-  --seq-algorithm-s0 arg (=0.050000000000000003)
-                                        Seq interaction algorithm s0 (0.0 <= s0
-                                        <= 1.0)
+  --seq-algorithm-mode arg (=snr)       Relief algorithm mode (snr|tstat)
   --seq-snr-mode arg (=snr)             Seq interaction algorithm SNR mode 
                                         (snr|relieff)
   --seq-tstat-mode arg (=pval)          Seq interaction algorithm t-statistic 
-                                        mode (pval|abst)
+                                        mode (pval|abst|rawt)
+  --seq-algorithm-s0 arg (=0.050000000000000003)
+                                        Seq interaction algorithm s0 (0.0 <= s0
+                                        <= 1.0)
   -t [ --num-target ] arg               target number of attributes to keep 
                                         after backwards selection
   -r [ --iter-remove-n ] arg            number of attributes to remove per 
                                         iteration of backwards selection
   -p [ --iter-remove-percent ] arg      percentage of attributes to remove per 
                                         iteration of backwards selection
+  --normalize-scores arg (=0)           normalize ReliefF scores? (0|1)
   -O [ --out-dataset-filename ] arg     write a new tab-delimited data set with
                                         EC filtered attributes
   -o [ --out-files-prefix ] arg (=reliefseq_default)
@@ -98,7 +99,10 @@ Allowed options:
                                         (manhattan=|euclidean)
   -x [ --snp-exclusion-file ] arg       file of SNP names to be excluded
   -k [ --k-nearest-neighbors ] arg (=10)
-                                        set k nearest neighbors
+                                        set k nearest neighbors (0=optimize k)
+  --kopt-begin arg (=1)                 optimize k starting with kopt-begin
+  --kopt-end arg (=1)                   optimize k ending with kopt-end
+  --kopt-step arg (=1)                  optimize k incrementing with kopt-step
   -m [ --number-random-samples ] arg (=0)
                                         number of random samples (0=all|1 <= n 
                                         <= number of samples)
@@ -145,7 +149,7 @@ produced will be prepended with 'result'.
 This produces a file called `result.reliefseq`, in which the SNPs are ranked 
 in descending order.
 
-For additional examples, see the [ReliefSeq](http://insilico.utulsa.edu/reliefseq)
+For additional examples, see the [ReliefSeq](http://insilico.utulsa.edu/ReliefSeq.php)
 page on our research website.
 
 ### Contributors ###
