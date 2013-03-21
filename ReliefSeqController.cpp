@@ -289,8 +289,11 @@ bool ReliefSeqController::ComputeScoresKopt() {
   }
 
   // iterate over all k's
-  vector<map<string, double> > allScores;
+  //vector<map<string, double> > ;allScores;
   vector<unsigned int> koptValues;
+	bool hasNames = false;
+	vector<vector<double> > allScores;
+	vector<string> scoreNames;
   for(unsigned int thisK = koptBegin; thisK <= koptEnd; thisK += koptStep) {
     // run ReliefF on this k
     cout << Timestamp() << "--------------------------" << endl;
@@ -300,38 +303,35 @@ bool ReliefSeqController::ComputeScoresKopt() {
     scores.clear();
 		dataset->ResetNearestNeighbors();
     scores = reliefseqAlgorithm->ComputeScores();
-    sort(scores.begin(), scores.end(), scoresSortDesc);
-
+	  sort(scores.begin(), scores.end(), scoresSortAscByName);
+		vector<double> thisScores;
+		AttributeScoresCIt scoresIt = scores.begin();
+		for(; scoresIt != scores.end(); ++scoresIt) {
+			if(!hasNames) {
+				scoreNames.push_back(scoresIt->second);
+			}
+			thisScores.push_back(scoresIt->first);
+		}
+		allScores.push_back(thisScores);
+	
 		// I/O
     if(paramsMap.count("write-each-k-scores")) {
       stringstream filePrefix;
       filePrefix << outFilesPrefix << "." << thisK;
       WriteAttributeScores(filePrefix.str());
     }
-    // PrintScores();
-    
-    // keep all scores by attribute name
-    map<string, double> thisKScores;
-    AttributeScoresCIt thisScoresIt = scores.begin();
-    for(; thisScoresIt != scores.end(); ++thisScoresIt) {
-      thisKScores[thisScoresIt->second] = thisScoresIt->first;
-    }
-    allScores.push_back(thisKScores);
+    // PrintScores();    
   }
 
   // pick best scores and k's for each attribute
   scores.clear();
-  vector<string> varNames = dataset->GetVariableNames();
-  for(vector<string>::const_iterator vnIt = varNames.begin();
-          vnIt != varNames.end(); ++vnIt) {
-    string thisVar = *vnIt;
-    double bestScore = -1.0;
-    unsigned int bestK = koptValues[0];
-    vector<map<string, double> >::const_iterator scIt = allScores.begin();
-    for(unsigned int kIndex = 0; scIt != allScores.end(); ++scIt, ++kIndex) {
-      unsigned int thisK = koptValues[kIndex];
-      map<string, double> thisMap = *scIt;
-      double thisScore = thisMap[thisVar];
+	for(unsigned int i=0; i < scoreNames.size(); ++i) {
+    string thisVar = scoreNames[i];
+		unsigned int bestK = koptValues[0];
+		double bestScore = -1.0;
+		for(unsigned int j=0; j < koptValues.size(); ++j) {
+			unsigned int thisK = koptValues[j];
+			double thisScore = allScores[i][j];
       if(thisScore > bestScore) {
         bestScore = thisScore;
         bestK = thisK;
