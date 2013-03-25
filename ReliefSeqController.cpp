@@ -320,23 +320,34 @@ bool ReliefSeqController::ComputeScoresKopt() {
       filePrefix << outFilesPrefix << "." << thisK;
       WriteAttributeScores(filePrefix.str());
     }
-    // PrintScores();    
+    // PrintScores();
+    hasNames = true;
   }
 
+  // print allScores
+//	for(unsigned int i=0; i < koptValues.size(); ++i) {
+//		for(unsigned int j=0; j < scoreNames.size(); ++j) {
+//      cout << allScores[i][j] << " ";
+//    }
+//    cout << endl;
+//  }
+  
   // pick best scores and k's for each attribute
   scores.clear();
 	for(unsigned int i=0; i < scoreNames.size(); ++i) {
     string thisVar = scoreNames[i];
 		unsigned int bestK = koptValues[0];
+    cout << thisVar;
 		double bestScore = -1.0;
 		for(unsigned int j=0; j < koptValues.size(); ++j) {
 			unsigned int thisK = koptValues[j];
-			double thisScore = allScores[i][j];
+			double thisScore = allScores[j][i];
       if(thisScore > bestScore) {
         bestScore = thisScore;
         bestK = thisK;
       }
     }
+    cout << "\t" << bestScore << " (" << bestK << ")" << endl;
     scores.push_back(make_pair(bestScore, thisVar));
     bestKs[thisVar] = bestK;
   }
