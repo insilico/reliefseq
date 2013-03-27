@@ -337,7 +337,7 @@ bool ReliefSeqController::ComputeScoresKopt() {
 	for(unsigned int i=0; i < scoreNames.size(); ++i) {
     string thisVar = scoreNames[i];
 		unsigned int bestK = koptValues[0];
-    cout << thisVar;
+    // cout << thisVar;
 		double bestScore = -1.0;
 		for(unsigned int j=0; j < koptValues.size(); ++j) {
 			unsigned int thisK = koptValues[j];
@@ -347,7 +347,7 @@ bool ReliefSeqController::ComputeScoresKopt() {
         bestK = thisK;
       }
     }
-    cout << "\t" << bestScore << " (" << bestK << ")" << endl;
+    // cout << "\t" << bestScore << " (" << bestK << ")" << endl;
     scores.push_back(make_pair(bestScore, thisVar));
     bestKs[thisVar] = bestK;
   }
