@@ -27,7 +27,7 @@ AC_CANONICAL_HOST
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
-AC_F77_LIBRARY_LDFLAGS
+#AC_F77_LIBRARY_LDFLAGS
 AC_PROG_LN_S
 AC_PROG_LIBTOOL
 
@@ -40,7 +40,7 @@ AC_HELP_STRING([--enable-debug],[Compile code for debugging.]),
 [debug_reliefseq=yes]
 )
 if test "$debug_reliefseq" == 'yes' ; then
-    CXXFLAGS="-O0 -Wall -DDEBUG $CXXFLAGS"
+    CXXFLAGS="-O0 -Wall -DDEBUG"
 fi
 
 AC_ARG_ENABLE(static,
@@ -72,8 +72,6 @@ AC_MSG_NOTICE([--------------------------------------------------])
 AC_CHECK_LIB([gomp], [GOMP_parallel_loop_dynamic_start],
     [], AC_MSG_ERROR(test for OpenMP failed))
 LDFLAGS="$LDFLAGS -lgomp"
-CXXFLAGS="$CXXFLAGS"
-CPPFLAGS=""
 
 AC_CHECK_LIB(pthread, pthread_create)
 LDFLAGS="$LDFLAGS -lpthread"

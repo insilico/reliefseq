@@ -67,7 +67,7 @@ public:
   }
   // added to support AttributeRanker interface - 8/13/12
   AttributeScores ComputeScores();
-	bool ResetForNextIteration() {;}
+	bool ResetForNextIteration() { return true;}
 private:
   /*************************************************************************//**
    * Private method to setup the chi-squared contingency tables for a particular
