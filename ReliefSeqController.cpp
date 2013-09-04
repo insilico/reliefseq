@@ -289,7 +289,7 @@ bool ReliefSeqController::ComputeScoresKopt() {
   }
 
   // iterate over all k's
-  //vector<map<string, double> > ;allScores;
+  //vector<map<string, double> > allScores;
   vector<unsigned int> koptValues;
 	bool hasNames = false;
 	vector<vector<double> > allScores;
