@@ -41,6 +41,8 @@ AC_HELP_STRING([--enable-debug],[Compile code for debugging.]),
 )
 if test "$debug_reliefseq" == 'yes' ; then
     CXXFLAGS="-O0 -Wall -DDEBUG"
+else
+    CXXFLAGS="-O3 -Wall -fopenmp"
 fi
 
 AC_ARG_ENABLE(static,
@@ -69,12 +71,12 @@ AC_CHECK_PROG([MAKEINFO], [makeinfo], [makeinfo], AC_MSG_ERROR([could not find r
 
 AC_MSG_NOTICE([--------------------------------------------------])
 
-AC_CHECK_LIB([gomp], [GOMP_parallel_loop_dynamic_start],
-    [], AC_MSG_ERROR(test for OpenMP failed))
-LDFLAGS="$LDFLAGS -lgomp"
+#AC_CHECK_LIB([gomp], [GOMP_parallel_loop_dynamic_start],
+#    [], AC_MSG_ERROR(test for OpenMP failed))
+#LDFLAGS="$LDFLAGS -lgomp"
 
-AC_CHECK_LIB(pthread, pthread_create)
-LDFLAGS="$LDFLAGS -lpthread"
+#AC_CHECK_LIB(pthread, pthread_create)
+#LDFLAGS="$LDFLAGS -lpthread"
 
 # boost.m4
 BOOST_REQUIRE

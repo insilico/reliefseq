@@ -13,12 +13,6 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
-/* Define to 1 if you have the `gomp' library (-lgomp). */
-#define HAVE_LIBGOMP 1
-
-/* Define to 1 if you have the `pthread' library (-lpthread). */
-#define HAVE_LIBPTHREAD 1
-
 /* Define to 1 if you have the <math.h> header file. */
 #define HAVE_MATH_H 1
 
