@@ -314,12 +314,13 @@ bool PlinkBinaryDataset::LoadSnps(string filename) {
   // determine minor allele and its frequency - 12/21/11
   for(unsigned int attrIdx = 0; attrIdx < NumAttributes(); ++attrIdx) {
     map<char, unsigned int> thisAttrMap = attributeAlleleCounts[attrIdx];
-    if(thisAttrMap.size() != 2) {
-      cerr << "ERROR: Only biallelic genotypes are supported, "
-      		<< thisAttrMap.size() << " alleles detected in attribute index:"
-      		<< attrIdx << endl;
-      return false;
-    }
+    // commented out 7/14/14 to match PlinkDataset.cpp
+    // if(thisAttrMap.size() != 2) {
+    //   cerr << "ERROR: Only biallelic genotypes are supported, "
+    //   		<< thisAttrMap.size() << " alleles detected in attribute index:"
+    //   		<< attrIdx << endl;
+    //   return false;
+    // }
     map<char, unsigned int>::const_iterator mapIt = thisAttrMap.begin();
     char allele1 = mapIt->first;
     unsigned int allele1Count = mapIt->second;
