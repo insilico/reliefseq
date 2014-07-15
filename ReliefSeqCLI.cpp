@@ -647,6 +647,7 @@ int main(int argc, char** argv) {
 		case NUMERIC_ONLY_ANALYSIS:
 		case INTEGRATED_ANALYSIS:
 		case REGRESSION_ANALYSIS:
+		case RNASEQ_ANALYSIS:
 			ds->PrintNumericsStats();
 			break;
 		case DGE_ANALYSIS:

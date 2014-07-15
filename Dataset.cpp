@@ -2996,9 +2996,9 @@ bool Dataset::CalculateDistanceMatrix(double** distanceMatrix,
 		// cout << "Computing instance to instance distances. Row: " << i << endl;
 		// #pragma omp parallel for
 		for (int j = i + 1; j < numInstances; ++j) {
-			unsigned int dsi1Index;
+			unsigned int dsi1Index = 0;
 			GetInstanceIndexForID(instanceIds[i], dsi1Index);
-			unsigned int dsi2Index;
+			unsigned int dsi2Index = 0;
 			GetInstanceIndexForID(instanceIds[j], dsi2Index);
 			distanceMatrix[i][j] = distanceMatrix[j][i] =
 					ComputeInstanceToInstanceDistance(GetInstance(dsi1Index),
@@ -3045,7 +3045,7 @@ bool Dataset::CalculateDistanceMatrix(double** distanceMatrix,
 				<< "]" << endl;
 		ofstream phenoFile(phenoFilename.c_str());
 		for (int i = 0; i < numInstances; ++i) {
-			unsigned int dsiIndex;
+			unsigned int dsiIndex = 0;
 			GetInstanceIndexForID(instanceIds[i], dsiIndex);
 			if (hasContinuousPhenotypes) {
 				phenoFile << instances[dsiIndex]->GetPredictedValueTau()
@@ -3068,9 +3068,9 @@ bool Dataset::CalculateDistanceMatrix(vector<vector<double> >& distanceMatrix) {
 #pragma omp parallel for schedule(dynamic, 1)
 	for (int i = 0; i < numInstances; ++i) {
 		for (int j = i + 1; j < numInstances; ++j) {
-			unsigned int dsi1Index;
+			unsigned int dsi1Index = 0;
 			GetInstanceIndexForID(instanceIds[i], dsi1Index);
-			unsigned int dsi2Index;
+			unsigned int dsi2Index = 0;
 			GetInstanceIndexForID(instanceIds[j], dsi2Index);
 			distanceMatrix[i][j] = distanceMatrix[j][i] =
 					ComputeInstanceToInstanceDistance(GetInstance(dsi1Index),

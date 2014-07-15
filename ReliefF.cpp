@@ -318,7 +318,7 @@ AttributeRanker::AttributeRanker(ds) {
     // k nearest neighbors and m randomly selected instances
     // spread differences and thus weight updates
     // over (m x k) iterations
-    double one_over_m_times_k = 1.0 / (((double) m) * ((double) k));
+    // double one_over_m_times_k = 1.0 / (((double) m) * ((double) k));
     //                               m       *           k
   } else {
     cout << Timestamp() << "k nearest neighbors will be optimized" << endl;
@@ -383,8 +383,6 @@ AttributeRanker::AttributeRanker(ds) {
     cout << Timestamp() << "Sampling instances randomly" << endl;
     randomlySelect = true;
   }
-
-
 
   /// set the SNP metric function pointer
   bool snpMetricFunctionUnset = true;

@@ -96,9 +96,8 @@ bool SNReliefF::PreComputeNeighborGeneStats() {
 		// find k nearest hits and nearest misses
 		vector<unsigned int> hits(k);
 		map<ClassLevel, vector<unsigned int> > allMisses;
-		bool canGetNeighbors = false;
-		canGetNeighbors = M_i->GetNNearestInstances(k, hits, allMisses);
-		if(allMisses.size() != 1) {
+		bool canGetNeighbors = M_i->GetNNearestInstances(k, hits, allMisses);
+		if(canGetNeighbors && (allMisses.size() != 1)) {
 			cerr << "ERROR: SNReliefF requires case-control data" << endl;
 			return false;
 		}

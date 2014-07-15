@@ -142,7 +142,6 @@ bool ReliefSeqController::ComputeScores() {
 
   unsigned int iteration = 1;
   boost::progress_timer t;
-  float elapsedTime = 0.0;
   while(numWorkingAttributes >= numTargetAttributes) {
     pair<unsigned int, unsigned int> titvCounts =
             dataset->GetAttributeTiTvCounts();
@@ -250,7 +249,7 @@ bool ReliefSeqController::SetKoptParameters() {
             << "] is greater than maximum k [" << kmax << "]" << endl;
     return false;
   }
-  if(tempKoptBegin == tempKoptEnd == tempKoptStep) {
+  if((tempKoptBegin == tempKoptEnd) == tempKoptStep) {
     cerr << "ERROR: k optimization specified but the range "
             << "and step values do not specify any iterations"
             << endl;
