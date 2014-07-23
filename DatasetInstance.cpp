@@ -216,17 +216,17 @@ void DatasetInstance::SetDistanceSums(unsigned int kNearestNeighbors,
                                       DistancePairs instanceSums) {
   bestNeighborIds.clear();
 
-  //  cout << "Instance sums:" << endl;
-  //  PrintDistancePairs(instanceSums);
+  // cout << "Instance sums:" << endl;
+  // PrintDistancePairs(instanceSums);
 
   // use Nate's best_n.h algorithm to select the nearest neighbors
   DistancePairs bestInstances;
   best_n(instanceSums.begin(), instanceSums.end(),
          back_insert_iterator<DistancePairs > (bestInstances),
          kNearestNeighbors, deref_less_bcw());
-  // sort(bestInstances.begin(), bestInstances.end());
-  //  cout << "Best instances:" << endl;
-  //  PrintDistancePairs(bestInstances);
+  sort(bestInstances.begin(), bestInstances.end());
+  // cout << "Best instances:" << endl;
+  // PrintDistancePairs(bestInstances);
 
   DistancePairsIt it = bestInstances.begin();
   for(; it != bestInstances.end(); ++it) {

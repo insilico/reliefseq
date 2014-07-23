@@ -57,6 +57,15 @@ bool AttributeRanker::DoNormalize() {
 }
 
 bool AttributeRanker::SetK(unsigned int newK) {
+
+  if(dataset->HasContinuousPhenotypes()) {
+    if(newK && (newK < dataset->NumInstances())) {
+      k = newK;
+      return true;
+    }
+    return false;
+  }
+
   map<ClassLevel, vector<unsigned int> > classLevels =
           dataset->GetClassIndexes();
   map<ClassLevel, vector<unsigned int> >::const_iterator ciIt;
