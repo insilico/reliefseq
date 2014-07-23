@@ -254,6 +254,7 @@ bool PlinkBinaryDataset::LoadSnps(string filename) {
   /// Remove instances that are not in instanceIdsToLoad
   /// or marked as missing phenotype - 11/1/11
   /// Only remove missing phenotypes if no alt pheno file - 1/23/12
+  cout << Timestamp() << "Performing instance filtering" << endl;
   vector<DatasetInstance*> newInstances;
   vector<DatasetInstance*> delInstances;
   map<string, unsigned int> keepIds;
@@ -312,6 +313,7 @@ bool PlinkBinaryDataset::LoadSnps(string filename) {
   numInstancesRead = instances.size();
 
   // determine minor allele and its frequency - 12/21/11
+  cout << Timestamp() << "Determining minor alleles and their frequency" << endl;
   for(unsigned int attrIdx = 0; attrIdx < NumAttributes(); ++attrIdx) {
     map<char, unsigned int> thisAttrMap = attributeAlleleCounts[attrIdx];
     // commented out 7/14/14 to match PlinkDataset.cpp
@@ -324,6 +326,13 @@ bool PlinkBinaryDataset::LoadSnps(string filename) {
     map<char, unsigned int>::const_iterator mapIt = thisAttrMap.begin();
     char allele1 = mapIt->first;
     unsigned int allele1Count = mapIt->second;
+    if(thisAttrMap.size() == 1) {
+      cerr << "WARNING: Monoallelic genotype detected in attribute index:"
+         << attrIdx << endl;
+      attributeMinorAllele[attrIdx] = make_pair(allele1, 1.0);
+      continue;
+    }
+
     ++mapIt;
     char allele2 = mapIt->first;
     unsigned int allele2Count = mapIt->second;
