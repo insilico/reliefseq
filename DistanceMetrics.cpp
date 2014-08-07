@@ -247,7 +247,9 @@ double diffNCA6(unsigned int attributeIndex,
   		double nucleotideCount2 = (double) nca2It->second;
   		distance += abs(nucleotideCount1 - nucleotideCount2);
   	}
+    cout << "genotype 1: " << genotype1 << ", genotype2: " << genotype2 << " => distance: " << distance << endl;
   }
+
   return distance;
 }
 

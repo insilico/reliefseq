@@ -574,17 +574,18 @@ public:
                                            DatasetInstance* dsi2);
   /*************************************************************************//**
    * Set the the distance metrics used to compute instance-to-instance distances.
-   * \param [in] snpMetric name of SNP metric
-   * \param [in] numMetric name of the numeric metric
+   * \param [in] newSnpWeightMetric name of SNP metric for diff
+   * \param [in] newSnpNNMetric name of SNP metric for nearest neighbors
+   * \param [in] newNumMetric name of the numeric metric
    * \return distance
    ****************************************************************************/
-  bool SetDistanceMetrics(std::string newSnpMetric,
+  bool SetDistanceMetrics(std::string newSnpWeightMetric, std::string newSnpNNMetric,
   		std::string newNumMetric="manhattan");
   /*************************************************************************//**
    * Get the the distance metrics used to compute instance-to-instance distances.
    * \return pair<snp distance metric name, numeric distance metric name>
    ****************************************************************************/
-  std::pair<std::string, std::string> GetDistanceMetrics();
+  std::vector<std::string> GetDistanceMetrics();
   /*************************************************************************//**
    * Get the the mutation transition and transversion counts..
    * \return pair<number of transitions, number of transversions>
@@ -672,6 +673,16 @@ protected:
                     DatasetInstance* dsi1,
                     DatasetInstance* dsi2);
   /*************************************************************************//**
+   * Compute the discrete difference in an attribute between two instances.
+   * \param [in] attributeIndex index into vector of all attributes
+   * \param [in] dsi1 pointer to DatasetInstance 1
+   * \param [in] dsi2 pointer to DatasetInstance 2
+   * \return diff(erence)
+   ****************************************************************************/
+  double (*snpDiffNN)(unsigned int attributeIndex,
+                      DatasetInstance* dsi1,
+                      DatasetInstance* dsi2);
+  /*************************************************************************//**
    * Compute the continuous difference in an attribute between two instances.
    * \param [in] attributeIndex index into vector of all attributes
    * \param [in] dsi1 pointer to DatasetInstance 1
@@ -684,6 +695,8 @@ protected:
 
   /// the name of discrete diff(erence) function
   std::string snpMetric;
+  /// the name of discrete diff(erence) function for nearest neighbors
+  std::string snpMetricNN;
   /// the name of continuous diff(erence) function
   std::string numMetric;
 

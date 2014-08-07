@@ -42,6 +42,7 @@
 #include "DgeData.h"
 #include "BirdseedData.h"
 #include "DistanceMetrics.h"
+#include "ReliefF.h"
 
 using namespace std;
 using namespace insilico;
@@ -80,14 +81,20 @@ Dataset::Dataset() {
 	attributeMutationMap[make_pair('X', 'Y')] = UNKNOWN_MUTATION;
 	attributeMutationMap[make_pair('Y', 'X')] = UNKNOWN_MUTATION;
 
+	/// metric defaults
 	snpMetric = "gm";
 	snpDiff = diffGMM;
+
+	snpMetricNN = "gm";
+	snpDiffNN = diffGMM;
 
 	numMetric = "manhattan";
 	numDiff = diffManhattan;
 
-	cout << Timestamp() << "Default SNP nearest neighbors distance metric: "
+	cout << Timestamp() << "Default SNP diff metric: "
 			<< snpMetric << endl;
+	cout << Timestamp() << "Default SNP nearest neighbors distance metric: "
+			<< snpMetricNN << endl;
 	cout << Timestamp() << "Default continuous distance metric: " << numMetric
 			<< endl;
 
@@ -2799,7 +2806,7 @@ double Dataset::ComputeInstanceToInstanceDistance(DatasetInstance* dsi1,
 				vector<unsigned int> attributeIndices = MaskGetAttributeIndices(
 						DISCRETE_TYPE);
 				for (unsigned int i = 0; i < attributeIndices.size(); ++i) {
-					distance += snpDiff(attributeIndices[i], dsi1, dsi2);
+					distance += snpDiffNN(attributeIndices[i], dsi1, dsi2);
 				}
 			}
 		}
@@ -2824,35 +2831,65 @@ double Dataset::ComputeInstanceToInstanceDistance(DatasetInstance* dsi1,
 	return distance;
 }
 
-bool Dataset::SetDistanceMetrics(string newSnpMetric, string newNumMetric) {
+bool Dataset::SetDistanceMetrics(string newSnpWeightMetric, string newSnpNNMetric, 
+	string newNumMetric) {
 	/// set the SNP metric function pointer
 	bool snpMetricFunctionUnset = true;
-	if (snpMetricFunctionUnset && to_upper(newSnpMetric) == "GM") {
+	if (snpMetricFunctionUnset && to_upper(newSnpWeightMetric) == "GM") {
 		snpDiff = diffGMM;
 		snpMetricFunctionUnset = false;
 	}
-	if (snpMetricFunctionUnset && to_upper(newSnpMetric) == "AM") {
+	if (snpMetricFunctionUnset && to_upper(newSnpWeightMetric) == "AM") {
 		snpDiff = diffAMM;
 		snpMetricFunctionUnset = false;
 	}
-	if (snpMetricFunctionUnset && to_upper(newSnpMetric) == "NCA") {
+	if (snpMetricFunctionUnset && to_upper(newSnpWeightMetric) == "NCA") {
 		snpDiff = diffNCA;
 		snpMetricFunctionUnset = false;
 	}
-	if (snpMetricFunctionUnset && to_upper(newSnpMetric) == "NCA6") {
+	if (snpMetricFunctionUnset && to_upper(newSnpWeightMetric) == "NCA6") {
 		snpDiff = diffNCA6;
 		snpMetricFunctionUnset = false;
 	}
-	if (snpMetricFunctionUnset && to_upper(newSnpMetric) == "KM") {
+	if (snpMetricFunctionUnset && to_upper(newSnpWeightMetric) == "KM") {
 		snpDiff = diffKM;
 		snpMetricFunctionUnset = false;
 	}
 	if (snpMetricFunctionUnset) {
-		cerr << "ERROR: Cannot set SNP nearest neighbors metric to ["
-				<< newSnpMetric << "]" << endl;
+		cerr << "ERROR: Cannot set SNP diff metric to ["
+				<< newSnpWeightMetric << "]" << endl;
 		return false;
 	}
-	snpMetric = newSnpMetric;
+	snpMetric = newSnpWeightMetric;
+
+	/// set the nearest neighbors metric
+	bool snpNNMetricFunctionUnset = true;
+	if (snpNNMetricFunctionUnset && to_upper(newSnpNNMetric) == "GM") {
+		snpDiffNN = diffGMM;
+		snpNNMetricFunctionUnset = false;
+	}
+	if (snpNNMetricFunctionUnset && to_upper(newSnpNNMetric) == "AM") {
+		snpDiffNN = diffAMM;
+		snpNNMetricFunctionUnset = false;
+	}
+	if (snpNNMetricFunctionUnset && to_upper(newSnpNNMetric) == "NCA") {
+		snpDiffNN = diffNCA;
+		snpNNMetricFunctionUnset = false;
+	}
+	if (snpNNMetricFunctionUnset && to_upper(newSnpNNMetric) == "NCA6") {
+		snpDiffNN = diffNCA6;
+		snpNNMetricFunctionUnset = false;
+	}
+	if (snpNNMetricFunctionUnset && to_upper(newSnpNNMetric) == "KM") {
+		snpDiffNN = diffKM;
+		snpNNMetricFunctionUnset = false;
+	}
+	if (snpNNMetricFunctionUnset) {
+		cerr << "ERROR: Cannot set SNP nearest neighbors metric to ["
+				<< newSnpNNMetric << "]" << endl;
+		return false;
+	}
+	snpMetricNN = newSnpNNMetric;
 
 	if (to_upper(newNumMetric) == "MANHATTAN") {
 		numDiff = diffManhattan;
@@ -2868,16 +2905,23 @@ bool Dataset::SetDistanceMetrics(string newSnpMetric, string newNumMetric) {
 	}
 	numMetric = newNumMetric;
 
-	cout << Timestamp() << "New SNP distance metric for nearest neighbors: "
-			<< snpMetric << endl;
+	cout << Timestamp() << "New SNP distance diff metric: "
+			<< snpMetric << " " << (void*) snpDiff << endl;
+	cout << Timestamp() << "New SNP distance nearest neighbor metric: "
+			<< snpMetricNN << " " << (void *)snpDiffNN << endl;
 	cout << Timestamp() << "New continuous distance metric: " << numMetric
-			<< endl;
+			<< " " << (void *) numDiff << endl;
 
 	return true;
 }
 
-pair<string, string> Dataset::GetDistanceMetrics() {
-	return (make_pair(snpMetric, numMetric));
+vector<string> Dataset::GetDistanceMetrics() {
+	vector<string> metrics;
+	metrics.push_back(snpMetric);
+	metrics.push_back(snpMetricNN);
+	metrics.push_back(numMetric);
+
+	return metrics;
 }
 
 pair<unsigned int, unsigned int> Dataset::GetAttributeTiTvCounts() {
@@ -2893,6 +2937,7 @@ pair<unsigned int, unsigned int> Dataset::GetAttributeTiTvCounts() {
 
 	return make_pair(tiCount, tvCount);
 }
+
 pair<RandomJungleTreeType, string> Dataset::DetermineTreeType() {
 	pair<RandomJungleTreeType, string> returnValue;
 	// base classifier: classification or regression trees?
@@ -2988,8 +3033,8 @@ bool Dataset::CalculateDistanceMatrix(double** distanceMatrix,
 
 	// populate the matrix - upper triangular
 	// NOTE: make complete symmetric matrix for neighbor-to-neighbor sums
-	cout << Timestamp() << "Computing instance-to-instance distances... "
-			<< endl;
+	cout << Timestamp() << "Computing instance-to-instance distances with " 
+		<< snpMetricNN << "... " << endl;
 	//  omp_set_nested(1);
 #pragma omp parallel for schedule(dynamic, 1)
 	for (int i = 0; i < numInstances; ++i) {

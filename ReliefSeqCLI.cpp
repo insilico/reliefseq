@@ -163,17 +163,12 @@ int main(int argc, char** argv) {
 		(
 		"out-dataset-filename,O",
 		po::value<string > (&outputDatasetFilename),
-		"write a new tab-delimited data set with EC filtered attributes"
+		"write a new tab-delimited data set with Reliefseq filtered attributes"
 		)
 		(
 		"out-files-prefix,o",
 		po::value<string > (&outputFilesPrefix)->default_value(outputFilesPrefix),
 		"use prefix for all output files"
-		)
-		(
-		"snp-metric",
-		po::value<string > (&snpMetricNN)->default_value(snpMetricNN),
-		"metric for determining the difference between subjects (gm|am|nca|nca6)"
 		)
 		(
 		"snp-metric-nn,B",
@@ -183,7 +178,7 @@ int main(int argc, char** argv) {
 		(
 		"snp-metric-weights,W",
 		po::value<string > (&snpMetricWeights)->default_value(snpMetricWeights),
-		"metric for determining the difference between SNPs (gm|am|nca|nca6)"
+		"metric for determining the diff(erence) between SNPs (gm|am|nca|nca6)"
 		)
 		(
 		"numeric-metric,N",
@@ -463,7 +458,7 @@ int main(int argc, char** argv) {
 
 	// -------------------------------------------------------------------------
 	/// load and prepare data for running EC
-	cout << Timestamp() << "Loading and preparing data for EC analysis" << endl;
+	cout << Timestamp() << "Loading and preparing data for Reliefseq analysis" << endl;
 	Dataset* ds = 0;
 	DgeData* dge = 0;
 	BirdseedData* birdseed = 0;
@@ -627,9 +622,14 @@ int main(int argc, char** argv) {
 	}
 
 	if(vm.count("snp-metric-nn")) {
-		snpMetric = snpMetricNN;
+		snpMetricNN = snpMetricNN;
 	}
-	if(!ds->SetDistanceMetrics(snpMetric, numMetric)) {
+
+	if(vm.count("snp-metric-weights")) {
+		snpMetric = snpMetricWeights;
+	}
+
+	if(!ds->SetDistanceMetrics(snpMetric, snpMetricNN, numMetric)) {
 		cerr << "Could not set distance metrics for the data set, "
 				<< "SNP nearest neighbors: " << snpMetricNN
 				<< ", SNP ReliefF weight updates: " << snpMetricWeights

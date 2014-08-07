@@ -156,6 +156,7 @@ AttributeRanker::AttributeRanker(ds) {
       snpMetric = vm["snp-metric-weights"].as<string>();
     }
   }
+
   if(vm.count("numeric-metric")) {
     numMetric = vm["numeric-metric"].as<string>();
   } else {
@@ -780,8 +781,7 @@ bool ReliefF::PreComputeDistances() {
 
   // populate the matrix - upper triangular
   // NOTE: make complete symmetric matrix for neighbor-to-neighbor sums
-  cout << Timestamp() << "1) Computing instance-to-instance distances... "
-          << endl;
+  cout << Timestamp() << "1) Computing instance-to-instance distances with ... " << endl;
   //  omp_set_nested(1);
 #pragma omp parallel for schedule(dynamic, 1)
   for(int i = 0; i < numInstances; ++i) {

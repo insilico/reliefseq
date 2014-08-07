@@ -313,16 +313,30 @@ bool PlinkBinaryDataset::LoadSnps(string filename) {
   numInstancesRead = instances.size();
 
   // determine minor allele and its frequency - 12/21/11
+  if(attributeAlleleCounts.size() != NumAttributes()) {
+      cerr 
+        << "ERROR: allele counts map size " << attributeAlleleCounts.size()
+        << " != " 
+        << " number of attributes read " << NumAttributes()
+        << endl;
+      return false;
+  }
   cout << Timestamp() << "Determining minor alleles and their frequency" << endl;
   for(unsigned int attrIdx = 0; attrIdx < NumAttributes(); ++attrIdx) {
+    // happy lights
+    if(attrIdx && ((attrIdx % 10000) == 0)) {
+      cout << Timestamp() << (((float) attrIdx / NumAttributes()) * 100.0) << "%" << endl;
+    }
+
     map<char, unsigned int> thisAttrMap = attributeAlleleCounts[attrIdx];
     // commented out 7/14/14 to match PlinkDataset.cpp
-    // if(thisAttrMap.size() != 2) {
-    //   cerr << "ERROR: Only biallelic genotypes are supported, "
-    //   		<< thisAttrMap.size() << " alleles detected in attribute index:"
-    //   		<< attrIdx << endl;
-    //   return false;
-    // }
+    if(thisAttrMap.size() == 0) {
+      cerr 
+        << "ERROR: " << thisAttrMap.size() 
+        << " alleles detected in attribute index:" << attrIdx 
+        << endl;
+      return false;
+    }
     map<char, unsigned int>::const_iterator mapIt = thisAttrMap.begin();
     char allele1 = mapIt->first;
     unsigned int allele1Count = mapIt->second;
@@ -389,6 +403,7 @@ bool PlinkBinaryDataset::ReadBimFile(string bimFilename) {
   string line;
   // pair < map<string, unsigned int>::iterator, bool> retAlleleInsert;
   unsigned int attrIdx = 0;
+//  int count = 0;
   while(getline(bimDataStream, line)) {
     ++bimLineNumber;
     string trimmedLine = trim(line);
@@ -421,7 +436,15 @@ bool PlinkBinaryDataset::ReadBimFile(string bimFilename) {
                                             genotypeAllele2[0])]
             );
 
-    // cout << genotypeAllele1[0] << ", " << genotypeAllele2[0] << endl;
+    // if (count < 10) {
+    //   cout 
+    //     << genotypeAllele1[0] << ", " 
+    //     << genotypeAllele2[0] << " => "
+    //     << attributeMutationMap[make_pair(genotypeAllele1[0], genotypeAllele2[0])]
+    //     << endl;
+    // }
+    // count++;
+
     //    map<string, unsigned int>* map1 = new map<string, unsigned int>;
     //    map<unsigned int, string>* map2 = new map<unsigned int, string>;
     //    map<string, unsigned int> map1;
