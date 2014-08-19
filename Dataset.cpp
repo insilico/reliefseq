@@ -2823,15 +2823,15 @@ double Dataset::ComputeInstanceToInstanceDistance(DatasetInstance* dsi1,
 			  	string genotype2 = genotypeMap[attrLevel2];
 			  	double tempDistance = snpDiffNN(attributeIndices[i], dsi1, dsi2);
 					distance += tempDistance;
-					cout 
-						<< a1 << "\t" << a2 << "\t" 
-						<< attrLevel1 << "\t" << attrLevel2 << "\t"
-						<< genotype1 << "\t" << genotype2 << "\t" 
-						<< tempDistance << "\t" << distance << endl;
+					// cout 
+					// 	<< a1 << "\t" << a2 << "\t" 
+					// 	<< attrLevel1 << "\t" << attrLevel2 << "\t"
+					// 	<< genotype1 << "\t" << genotype2 << "\t" 
+					// 	<< tempDistance << "\t" << distance << endl;
 				}
 			}
 		}
-		cout << "SNP distance = " << distance << endl;
+		// cout << "SNP distance = " << distance << endl;
 	}
 
 	// added 6/16/11
