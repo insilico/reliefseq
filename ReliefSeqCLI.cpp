@@ -228,7 +228,7 @@ int main(int argc, char** argv) {
 		(
 		"diagnostic-tests,d",
 		po::value<string > (&diagnosticLogFilename),
-		"performs diagnostic tests and sends output to filename without running EC"
+		"performs diagnostic tests and sends output to filename without running reliefseq"
 		)
 		(
 		"diagnostic-levels-file,D",
@@ -457,7 +457,7 @@ int main(int argc, char** argv) {
 					<< endl;
 
 	// -------------------------------------------------------------------------
-	/// load and prepare data for running EC
+	/// load and prepare data for running reliefseq
 	cout << Timestamp() << "Loading and preparing data for Reliefseq analysis" << endl;
 	Dataset* ds = 0;
 	DgeData* dge = 0;
@@ -671,7 +671,7 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 
-	/// distance matrix calculation(s) do their work, then exit main() before EC
+	/// distance matrix calculation(s) do their work, then exit main()
 	if(vm.count("distance-matrix") || vm.count("gain-matrix")) {
 		if(vm.count("distance-matrix")) {
 			double** distanceMatrix = 0;

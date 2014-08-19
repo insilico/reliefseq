@@ -400,7 +400,7 @@ void ReliefSeqController::WriteAttributeScores(string baseFilename) {
     exit(1);
   }
   cout << Timestamp()
-          << "Writing EC scores to [" + resultsFilename + "]" << endl;
+          << "Writing reliefseq scores to [" + resultsFilename + "]" << endl;
   PrintAttributeScores(outFile);
   outFile.close();
 }

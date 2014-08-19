@@ -173,7 +173,7 @@ bool DatasetInstance::SwapAttributes(unsigned int a1, unsigned int a2) {
 void DatasetInstance::SetDistanceSums(unsigned int kNearestNeighbors,
                                       DistancePairs& sameClassSums,
                                       map<ClassLevel, DistancePairs>& diffClassSums) {
-  // added 9/22/11 for iterative Relief-F and EC
+  // added 9/22/11 for iterative Relief-F
   bestNeighborIdsSameClass.clear();
   bestNeighborIdsDiffClass.clear();
 

@@ -123,7 +123,7 @@ bool PlinkDataset::LoadSnps(string filename) {
 		cout << Timestamp() << "LoadSnps(): WARNING: phenotypes could not be "
 				"detected. All missing? " << endl;
 		cout << Timestamp() << "You can safely ignore this warning for "
-				"certain EC functionality, e.g.: distance matrix calculations"
+				"certain reliefseq functionality, e.g.: distance matrix calculations"
 			<< endl;
 		// might be calculating distance matrix, which doesn't need phenotypes
 		// so allow data set reader to continue despite missing class values
@@ -301,9 +301,15 @@ bool PlinkDataset::LoadSnps(string filename) {
     map<char, unsigned int>::const_iterator mapIt = thisAttrMap.begin();
     char allele1 = mapIt->first;
     unsigned int allele1Count = mapIt->second;
+    
     ++mapIt;
-    char allele2 = mapIt->first;
-    unsigned int allele2Count = mapIt->second;
+    char allele2 = '*';
+    unsigned int allele2Count = 0;
+    if(mapIt != thisAttrMap.end()) {
+      allele2 = mapIt->first;
+      allele2Count = mapIt->second;
+    }
+
     string majorAllele = " ";
     string minorAllele = " ";
     double attributeMaf = 0.0;

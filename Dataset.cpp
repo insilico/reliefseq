@@ -49,18 +49,18 @@ using namespace insilico;
 using namespace boost;
 
 Dataset::Dataset() {
-	/// Set private data to defaults.
+	/// Set defaults.
 	snpsFilename = "";
-	numericsFilename = "";
-	alternatePhenotypesFilename = "";
-
 	hasGenotypes = false;
 	hasAllelicInfo = false;
+
+	numericsFilename = "";
 	hasNumerics = false;
+
+	alternatePhenotypesFilename = "";
 	hasAlternatePhenotypes = false;
 	hasPhenotypes = true;
 	hasContinuousPhenotypes = false;
-
 	classColumn = 0;
 
 	maskIsPushed = false;
@@ -2758,7 +2758,7 @@ bool Dataset::CalculateRegainMatrix(double** gainMatrix,
 	int numAttributes = attributeNames.size();
 
 	// do linear or logistic regression here
-
+	// THIS IS IMPLEMENTED IN THE inbix PROJECT.
 
 	if (matrixFilename != "") {
 		cout << Timestamp() << "Writing GAIN matrix to file [" << matrixFilename
@@ -2806,11 +2806,32 @@ double Dataset::ComputeInstanceToInstanceDistance(DatasetInstance* dsi1,
 				vector<unsigned int> attributeIndices = MaskGetAttributeIndices(
 						DISCRETE_TYPE);
 				for (unsigned int i = 0; i < attributeIndices.size(); ++i) {
-					distance += snpDiffNN(attributeIndices[i], dsi1, dsi2);
+					// DEBUG
+			  	pair<char, char> alleles =
+		  			dsi1->GetDatasetPtr()->GetAttributeAlleles(attributeIndices[i]);
+			  	string a1 = " ";
+			  	a1[0] = alleles.first;
+			  	string a2 = " ";
+			  	a2[0] = alleles.second;
+			  	map<AttributeLevel, string> genotypeMap;
+			  	genotypeMap[0] = a1 + a1;
+			  	genotypeMap[1] = a1 + a2;
+			  	genotypeMap[2] = a2 + a2;
+			  	AttributeLevel attrLevel1 = dsi1->attributes[attributeIndices[i]];
+			  	AttributeLevel attrLevel2 = dsi2->attributes[attributeIndices[i]];
+			  	string genotype1 = genotypeMap[attrLevel1];
+			  	string genotype2 = genotypeMap[attrLevel2];
+			  	double tempDistance = snpDiffNN(attributeIndices[i], dsi1, dsi2);
+					distance += tempDistance;
+					cout 
+						<< a1 << "\t" << a2 << "\t" 
+						<< attrLevel1 << "\t" << attrLevel2 << "\t"
+						<< genotype1 << "\t" << genotype2 << "\t" 
+						<< tempDistance << "\t" << distance << endl;
 				}
 			}
 		}
-		// cout << "SNP distance = " << distance << endl;
+		cout << "SNP distance = " << distance << endl;
 	}
 
 	// added 6/16/11
@@ -3060,9 +3081,10 @@ bool Dataset::CalculateDistanceMatrix(double** distanceMatrix,
 			<< endl;
 
 	if (matrixFilename != "") {
+		string outFilename = matrixFilename + ".mat";
 		cout << Timestamp() << "Writing distance matrix to file ["
-				<< matrixFilename << "]" << endl;
-		ofstream outFile(matrixFilename.c_str());
+				<< outFilename << "]" << endl;
+		ofstream outFile(outFilename.c_str());
 		/// write header
 		for (int i = 0; i < numInstances; ++i) {
 			if (i) {
@@ -3085,7 +3107,7 @@ bool Dataset::CalculateDistanceMatrix(double** distanceMatrix,
 		outFile.close();
 
 		/// write phenotypes for the instances
-		string phenoFilename = matrixFilename + ".pheno";
+		string phenoFilename = matrixFilename + ".matpheno";
 		cout << Timestamp() << "Writing phenotypes to file [" << phenoFilename
 				<< "]" << endl;
 		ofstream phenoFile(phenoFilename.c_str());
