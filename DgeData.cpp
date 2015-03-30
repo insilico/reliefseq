@@ -298,7 +298,7 @@ string DgeData::GetCountsFilename() {
 }
 
 unsigned int DgeData::GetSequencingDepthForSample(unsigned int sampleIndex) {
-	if((sampleIndex < 0) || (sampleIndex >= sampleNames.size())) {
+	if(sampleIndex >= sampleNames.size()) {
 		cerr << "ERROR: DgeData::GetSequencingDepthForSample: "
 				<< "Sample index out of range: " << sampleIndex << endl;
 		exit(EXIT_FAILURE);

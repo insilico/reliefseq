@@ -1055,7 +1055,7 @@ vector<string> Dataset::GetFileAttributeNames() {
 
 bool Dataset::GetAttributeValues(unsigned int attributeIndex,
 		vector<AttributeLevel>& attributeValues) {
-	if ((attributeIndex < 0) || (attributeIndex > attributeNames.size())) {
+	if (attributeIndex > attributeNames.size()) {
 		cerr
 				<< "ERROR: Dataset::GetAttributeValues: attribute index out of range: "
 				<< attributeIndex << endl;
@@ -1106,7 +1106,7 @@ bool Dataset::HasAllelicInfo() {
 }
 
 AttributeLevel Dataset::GetAttribute(unsigned instanceIndex, string name) {
-	if ((instanceIndex) < 0 || (instanceIndex >= instances.size())) {
+	if (instanceIndex >= instances.size()) {
 		cerr << "ERROR: Dataset::GetAttribute: instance index " << instanceIndex
 				<< " out of range" << endl;
 		exit(1);
@@ -1129,7 +1129,7 @@ pair<char, char> Dataset::GetAttributeAlleles(unsigned int attributeIndex) {
 		exit(EXIT_FAILURE);
 	}
 	pair<char, char> returnPair = make_pair(' ', ' ');
-	if ((attributeIndex >= 0) && (attributeIndex < attributeAlleles.size())) {
+	if (attributeIndex < attributeAlleles.size()) {
 		returnPair = attributeAlleles[attributeIndex];
 	} else {
 		cerr << "ERROR: GetAttributeAlleles: attribute index out of range: "
@@ -1198,8 +1198,7 @@ bool Dataset::ProcessExclusionFile(string exclusionFilename) {
 
 AttributeMutationType Dataset::GetAttributeMutationType(
 		unsigned int attributeIndex) {
-	if ((attributeIndex >= 0)
-			&& (attributeIndex < attributeMutationTypes.size())) {
+	if (attributeIndex < attributeMutationTypes.size()) {
 		return attributeMutationTypes[attributeIndex];
 	}
 	return UNKNOWN_MUTATION;
@@ -1255,7 +1254,7 @@ double Dataset::GetKimuraDistance(DatasetInstance* dsi1,
 }
 
 unsigned int Dataset::NumLevels(unsigned int index) {
-	if ((index >= 0) && (index < attributeLevelsSeen.size())) {
+	if (index < attributeLevelsSeen.size()) {
 		return attributeLevelsSeen[index].size();
 	}
 	cerr << "ERROR: Attempt to access number of levels of an attribute "
@@ -1321,7 +1320,7 @@ void Dataset::HasNumerics(bool setHasNumerics) {
 }
 
 NumericLevel Dataset::GetNumeric(unsigned instanceIndex, string name) {
-	if ((instanceIndex < 0) || (instanceIndex >= instances.size())) {
+	if (instanceIndex >= instances.size()) {
 		cerr << "ERROR: Dataset::GetNumeric: instance index " << instanceIndex
 				<< " out of range" << endl;
 		exit(1);
@@ -3642,7 +3641,7 @@ bool Dataset::LoadNumerics(string filename) {
 bool Dataset::GetNumericValues(unsigned int numericIndex,
 		vector<double>& numericValues) {
 	if (hasNumerics) {
-		if ((numericIndex < 0) || (numericIndex > numericsNames.size())) {
+		if (numericIndex > numericsNames.size()) {
 			cerr
 					<< "ERROR: Dataset::GetNumericValues: numeric index out of range: "
 					<< numericIndex << endl;
