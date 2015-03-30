@@ -13,11 +13,17 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
+/* Define to 1 if you have the `gomp' library (-lgomp). */
+#define HAVE_LIBGOMP 1
+
 /* Define to 1 if you have the <math.h> header file. */
 #define HAVE_MATH_H 1
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
+
+/* Define to 1 if you have the <omp.h> header file. */
+#define HAVE_OMP_H 1
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #define HAVE_STDBOOL_H 1

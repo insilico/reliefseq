@@ -39,10 +39,11 @@ AC_ARG_ENABLE(debug,
 AC_HELP_STRING([--enable-debug],[Compile code for debugging.]), 
 [debug_reliefseq=yes]
 )
+
+#CXXFLAGS="-O3 -Wall -I/usr/local/include -I/usr/local/Cellar/gcc/4.9.2_1/lib/gcc/4.9/gcc/x86_64-apple-darwin13.4.0/4.9.2/include $CXXFLAGS"
+CXXFLAGS="-O3 -Wall -I/usr/local/include $CXXFLAGS"
 if test "$debug_reliefseq" == 'yes' ; then
     CXXFLAGS="-O0 -Wall -DDEBUG"
-else
-    CXXFLAGS="-O3 -Wall -fopenmp"
 fi
 
 AC_ARG_ENABLE(static,
@@ -57,7 +58,7 @@ esac],
 AM_CONDITIONAL(STATIC, test x$static = xtrue)
 
 # Checks for header files.
-AC_CHECK_HEADERS([math.h stdlib.h string.h sys/time.h])
+AC_CHECK_HEADERS([math.h stdlib.h string.h sys/time.h omp.h])
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_INLINE
@@ -71,9 +72,10 @@ AC_CHECK_PROG([MAKEINFO], [makeinfo], [makeinfo], AC_MSG_ERROR([could not find r
 
 AC_MSG_NOTICE([--------------------------------------------------])
 
-#AC_CHECK_LIB([gomp], [GOMP_parallel_loop_dynamic_start],
-#    [], AC_MSG_ERROR(test for OpenMP failed))
-#LDFLAGS="$LDFLAGS -lgomp"
+LDFLAGS="-L/usr/local/lib -L/usr/local/Cellar/gcc/4.9.2_1/lib/gcc/4.9 $LDFLAGS"
+AC_CHECK_LIB([gomp], [omp_get_num_threads],
+    [], AC_MSG_ERROR(test for OpenMP failed))
+LDFLAGS="$LDFLAGS -lgomp"
 
 #AC_CHECK_LIB(pthread, pthread_create)
 #LDFLAGS="$LDFLAGS -lpthread"
