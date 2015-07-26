@@ -236,7 +236,8 @@ bool ReliefSeqController::SetKoptParameters() {
   unsigned int tempKoptBegin = paramsMap["kopt-begin"].as<unsigned int>();
   unsigned int tempKoptEnd = paramsMap["kopt-end"].as<unsigned int>();
   unsigned int tempKoptStep = paramsMap["kopt-step"].as<unsigned int>();
-  unsigned int kmax = GetKmax();
+  // changed for continuous phenos - 7/26/15
+  unsigned int kmax = dataset->NumInstances();
 
   // error conditions
   if(tempKoptBegin > tempKoptEnd) {

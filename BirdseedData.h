@@ -103,4 +103,4 @@ private:
 	bool hasPhenotypes;
 };
 
-#endif /* DGEDATA_H_ */
+#endif /* BIRDSEEDDATA_H_ */

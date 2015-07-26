@@ -19,6 +19,8 @@ using namespace std;
 AttributeRanker::AttributeRanker(Dataset* ds) {
 	dataset = ds;
 	classificationAccuracy = 1.0;
+  k = 0;
+  normalizeScores = false;
 }
 
 AttributeRanker::~AttributeRanker() {
