@@ -6,7 +6,7 @@ LIBNAME=@LIBNAME@
 
 ACLOCAL_AMFLAGS="-Im4"
 
-AM_CXXFLAGS = -I$(top_srcdir) $(BOOST_CPPFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir) $(BOOST_CPPFLAGS) -fopenmp
 # AM_CXXFLAGS += -DHAVE__BOOL  -D__NOPLUGIN__
 AM_FFLAGS = $(my_include_paths)
 
