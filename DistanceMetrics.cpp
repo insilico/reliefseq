@@ -207,7 +207,6 @@ double diffNCA6(unsigned int attributeIndex,
                 DatasetInstance* dsi1,
                 DatasetInstance* dsi2) {
   double distance = 0.0;
-  // AMM
   pair<bool, double> checkMissing = CheckMissing(attributeIndex, dsi1, dsi2);
   if(checkMissing.first) {
     distance = checkMissing.second;
@@ -235,11 +234,12 @@ double diffKM(unsigned int attributeIndex,
 		if(dsi1->GetDatasetPtr()->GetAttributeMutationType(attributeIndex) ==
 				TRANSITION_MUTATION) {
 			distance = 1.0;
-		}
-		if(dsi1->GetDatasetPtr()->GetAttributeMutationType(attributeIndex) ==
-				TRANSVERSION_MUTATION) {
-			distance = 2.0;
-		}
+		} else {
+      if(dsi1->GetDatasetPtr()->GetAttributeMutationType(attributeIndex) ==
+          TRANSVERSION_MUTATION) {
+        distance = 2.0;
+      }
+    }
 	}
 
   return distance;

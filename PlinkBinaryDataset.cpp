@@ -330,19 +330,20 @@ bool PlinkBinaryDataset::LoadSnps(string filename) {
 
     map<char, unsigned int> thisAttrMap = attributeAlleleCounts[attrIdx];
     // commented out 7/14/14 to match PlinkDataset.cpp
-    if(thisAttrMap.size() == 0) {
-      cerr 
-        << "ERROR: " << thisAttrMap.size() 
-        << " alleles detected in attribute index:" << attrIdx 
-        << endl;
-      return false;
-    }
+//    if(thisAttrMap.size() == 0) {
+//      cerr 
+//        << "ERROR: " << thisAttrMap.size() 
+//        << " alleles detected in attribute index:" << attrIdx 
+//        << endl;
+//      return false;
+//    }
     map<char, unsigned int>::const_iterator mapIt = thisAttrMap.begin();
     char allele1 = mapIt->first;
     unsigned int allele1Count = mapIt->second;
     if(thisAttrMap.size() == 1) {
-      cerr << "WARNING: Monoallelic genotype detected in attribute index:"
-         << attrIdx << endl;
+      cerr << 
+           "WARNING: Monoallelic genotype detected in attribute index:" <<
+           attrIdx << endl;
       attributeMinorAllele[attrIdx] = make_pair(allele1, 1.0);
       continue;
     }

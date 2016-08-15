@@ -386,11 +386,6 @@ int main(int argc, char** argv) {
 		analysisType = NUMERIC_ONLY_ANALYSIS;
     noAnalysisFound = false;
 	}
-	if(noAnalysisFound && (vm.count("snp-data") && vm.count("numeric-data"))) {
-		cout << Timestamp() << "Integrated analysis requested" << endl;
-		analysisType = INTEGRATED_ANALYSIS;
-    noAnalysisFound = false;
-	}
 	if(noAnalysisFound && vm.count("dge-counts-data")) {
 		cout << Timestamp() << "DGE analysis requested" << endl;
 		analysisType = DGE_ANALYSIS;

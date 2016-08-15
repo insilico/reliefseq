@@ -141,12 +141,12 @@ public:
    * The number does not include masked variables removed.
    * \return number of discrete plus continuous variables
    ****************************************************************************/
-  unsigned int NumVariables();
+  virtual unsigned int NumVariables();
   /*************************************************************************//**
    * Returns the names of discrete and continuous variables in the data set.
    * \return vector of names as strings
    ****************************************************************************/
-  std::vector<std::string> GetVariableNames();
+  virtual std::vector<std::string> GetVariableNames();
   /// Returns the number of instances in the data set.
   virtual unsigned int NumInstances();
   /*************************************************************************//**
@@ -154,33 +154,33 @@ public:
    * \param [in] index index of instance
    * \return pointer to an instance
    ****************************************************************************/
-  DatasetInstance* GetInstance(unsigned int index);
+  virtual DatasetInstance* GetInstance(unsigned int index);
   /*************************************************************************//**
    * Returns a pointer to a randomly chosen data set instance.
    * The random number generator is set to give values in range
    * of instance indexes.
    * \return pointer to a data set instance
    ****************************************************************************/
-  DatasetInstance* GetRandomInstance();
+  virtual DatasetInstance* GetRandomInstance();
   /*************************************************************************//**
    * Get all instance IDs.
    * \return vector of instance IDs
    ****************************************************************************/
-  std::vector<std::string> GetInstanceIds();
+  virtual std::vector<std::string> GetInstanceIds();
   /*************************************************************************//**
    * Get the instance index from the instance ID.
    * \param [in] ID string ID
    * \param [out] instanceIndex instance index
    * \return success
    ****************************************************************************/
-  bool GetInstanceIndexForID(std::string ID, unsigned int& instanceIndex);
+  virtual bool GetInstanceIndexForID(std::string ID, unsigned int& instanceIndex);
   /// Return the number of unmasked discrete attributes in the data set.
   virtual unsigned int NumAttributes();
   /*************************************************************************//**
    * Return the discrete (SNP) attribute names.
    * \return vector of attribute names
    ****************************************************************************/
-  std::vector<std::string> GetAttributeNames();
+  virtual std::vector<std::string> GetAttributeNames();
   /*************************************************************************//**
    * Return the discrete (SNP) attribute names as read from file originally.
    * \return vector of attribute names
@@ -213,9 +213,9 @@ public:
    ****************************************************************************/
   unsigned int GetAttributeIndexFromName(std::string attributeName);
   /// Does the data set have genotype variables?
-  bool HasGenotypes();
+  virtual bool HasGenotypes();
   /// Does the data set have allelic information for genotypes?
-  bool HasAllelicInfo();
+  virtual bool HasAllelicInfo();
   /*************************************************************************//**
    * Get attribute value for attribute name at instance index.
    * \param [in] instanceIndex instance index
@@ -266,12 +266,12 @@ public:
    ****************************************************************************/
   unsigned int NumLevels(unsigned int index);
   /// Return the number of unmasked discrete attributes in the data set.
-  unsigned int NumNumerics();
+  virtual unsigned int NumNumerics();
   /*************************************************************************//**
    * Return the numeric attribute names.
    * \return vector of attribute names
    ****************************************************************************/
-  std::vector<std::string> GetNumericsNames();
+  virtual std::vector<std::string> GetNumericsNames();
   /*************************************************************************//**
    * Return the numeric attribute names as originally read from file.
    * \return vector of attribute names
@@ -290,7 +290,7 @@ public:
    ****************************************************************************/
   double GetMeanForNumeric(unsigned int numericIdx);
   /// Does the data set have numeric variables? setter/getter
-  bool HasNumerics();
+  virtual bool HasNumerics();
   void HasNumerics(bool setHasNumerics);
   /*************************************************************************//**
    * Get numeric value for numeric name at instance index.
@@ -330,7 +330,7 @@ public:
   /// see: http://en.wikipedia.org/wiki/Anscombe_transform
   bool TransformNumericsAnscombe();
   /// Get the number of classes in the data set.
-  unsigned int NumClasses();
+  virtual unsigned int NumClasses();
   /// Get the class column as read from the file.
   unsigned int GetClassColumn();
   /*************************************************************************//**
@@ -507,7 +507,7 @@ public:
    * \param  thisClass class value
    * \return probability
    ****************************************************************************/
-  double GetClassProbability(ClassLevel thisClass);
+  virtual double GetClassProbability(ClassLevel thisClass);
   /*************************************************************************//**
    * Get the probability of an attribute value at an attribute index.
    * \param [in] attributeIndex attribute index
@@ -718,7 +718,7 @@ protected:
   std::vector<std::map<char, unsigned int> > attributeAlleleCounts;
   /// minor allele, minor allele frequency
   std::vector<std::pair<char, double> > attributeMinorAllele;
-  /// Does this data set have alelelic information?
+  /// Does this data set have allelic information?
   bool hasAllelicInfo;
   /// genotype->count
   std::vector<std::map<std::string, unsigned int> > genotypeCounts;
