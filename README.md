@@ -1,6 +1,10 @@
 ReliefSeq
 ========================
 
+##### DEPRECATED #####
+ReliefSeq has been deprecated and reimplemented in
+[inbix on github](https://github.com/hexhead/inbix).
+
 #### A feature selection tool for biological SEQuence data ####
 
 ### Description ###
