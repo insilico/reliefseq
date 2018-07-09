@@ -8,14 +8,12 @@
 
 AC_PREREQ(2.61)
 
-AC_INIT([reliefseq], [1.0], [bill-white@utulsa.edu], [http://insilico.utulsa.edu/reliefseq])
-
+AC_INIT([reliefseq], [1.0])
+AC_CONFIG_SRCDIR([ReliefSeqCLI.cpp])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_SRCDIR([ReliefSeqCLI.cpp])
 AC_CONFIG_HEADERS([config.h])
-
-AM_INIT_AUTOMAKE([reliefseq], [1.0])
+AM_INIT_AUTOMAKE()
 
 AC_SUBST(SRCDIR, src)
 AC_SUBST(LIBDIR, library)

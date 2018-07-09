@@ -359,8 +359,7 @@ bool ArffDataset::LoadSnps(string filename) {
 					maxElement = *it;
 				}
 			}
-			numericsMinMax.push_back(
-					make_pair<double, double>(minElement, maxElement));
+			numericsMinMax.push_back(make_pair(minElement, maxElement));
 		}
 	}
 

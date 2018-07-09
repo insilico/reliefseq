@@ -6,6 +6,7 @@
  * Reworked entirely for McKinney Lab work - 2/28/11
  */
 
+#include <utility>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -2837,8 +2838,7 @@ double Dataset::ComputeInstanceToInstanceDistance(DatasetInstance* dsi1,
 	// compute numeric distances
 	if (HasNumerics()) {
 		//cout << "Computing numeric instance-to-instance distance..." << endl;
-		vector<unsigned int> numericIndices = MaskGetAttributeIndices(
-				NUMERIC_TYPE);
+		vector<unsigned int> numericIndices = MaskGetAttributeIndices(NUMERIC_TYPE);
 		//cout << "\tNumber of numerics: " << numericIndices.size() << endl;
 		for (unsigned int i = 0; i < numericIndices.size(); ++i) {
 			//cout << "\t\tNumeric index: " << numericIndices[i] << endl;
@@ -3627,8 +3627,7 @@ bool Dataset::LoadNumerics(string filename) {
 			}
 			columnSum += *it;
 		}
-		numericsMinMax.push_back(
-				make_pair<double, double>(minElement, maxElement));
+		numericsMinMax.push_back(make_pair(minElement, maxElement));
 		numericsSums.push_back(columnSum);
 	}
 

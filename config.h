@@ -55,15 +55,14 @@
 /* Define to 1 if the system has the type `_Bool'. */
 #define HAVE__BOOL 1
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
 
 /* Name of package */
 #define PACKAGE "reliefseq"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "bill-white@utulsa.edu"
+#define PACKAGE_BUGREPORT ""
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "reliefseq"
@@ -72,7 +71,7 @@
 #define PACKAGE_STRING "reliefseq 1.0"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "http://insilico.utulsa.edu/reliefseq"
+#define PACKAGE_TARNAME "reliefseq"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL ""

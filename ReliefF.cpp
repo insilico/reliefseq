@@ -476,17 +476,16 @@ bool ReliefF::ComputeAttributeScores() {
 	W.clear();
   W.resize(dataset->NumVariables(), 0.0);
 
-  // pointer to the instance being sampled
-  DatasetInstance* R_i;
-  int i = 0;
-  cout << Timestamp() << "Running Relief-F algorithm" << endl;
   double one_over_m_times_k = 1.0 / (((double) m) * ((double) k));
   cout << Timestamp() << "Averaging factor 1/(m*k): "  
           << one_over_m_times_k << endl;
 
+  // pointer to the instance being sampled
+  DatasetInstance* R_i = 0;
+  cout << Timestamp() << "Running Relief-F algorithm" << endl;
   vector<string> instanceIds = dataset->GetInstanceIds();
   /// algorithm line 2
-  for(i = 0; i < (int) m; i++) {
+  for(int i = 0; i < (int) m; i++) {
     // algorithm line 3
     if(randomlySelect) {
       // randomly sample an instance (without replacement?)
@@ -494,7 +493,7 @@ bool ReliefF::ComputeAttributeScores() {
     } else {
       // deterministic/indexed instance sampling, ie, every instance against
       // every other instance
-      unsigned int instanceIndex;
+      unsigned int instanceIndex = 0;
       dataset->GetInstanceIndexForID(instanceIds[i], instanceIndex);
       R_i = dataset->GetInstance(instanceIndex);
     }
@@ -510,28 +509,28 @@ bool ReliefF::ComputeAttributeScores() {
     // find k nearest hits and nearest misses
     vector<unsigned int> hits;
     map<ClassLevel, vector<unsigned int> > misses;
-    bool canGetNeighbors = false;
-    canGetNeighbors = R_i->GetNNearestInstances(k, hits, misses);
-    //    cout << "Instance class: " << R_i->GetClass() << ", hits: ";
-    //    for(unsigned int ii = 0; ii < hits.size(); ++ii) {
-    //      cout << hits[ii] << " ";
-    //    }
-    //    cout << endl << "Misses:" << endl;
-    //    map<ClassLevel, vector<unsigned int> >::const_iterator iit;
-    //    for(iit = misses.begin(); iit != misses.end(); ++iit) {
-    //      cout << "Class: " << iit->first << ", misses: ";
-    //      vector<unsigned int> ids = iit->second;
-    //      for(unsigned int jj = 0; jj < ids.size(); ++jj) {
-    //        cout << ids[jj] << " ";
-    //      }
-    //      cout << endl;
-    //    }
-
-    if(!canGetNeighbors) {
+    if(!R_i->GetNNearestInstances(k, hits, misses)) {
       cerr << "ERROR: relieff cannot get " << k << " nearest neighbors"
               << endl;
       return false;
     }
+
+    // !! DEBUG
+    // cout << "Instance class: " << R_i->GetClass() << ", hits: ";
+//    for(unsigned int ii = 0; ii < hits.size(); ++ii) {
+//      cout << hits[ii] << " ";
+//    }
+//    cout << endl << "Misses:" << endl;
+//    // !! DEBUG
+//    map<ClassLevel, vector<unsigned int> >::const_iterator iit;
+//    for(iit = misses.begin(); iit != misses.end(); ++iit) {
+//      cout << "Class: " << iit->first << ", misses: ";
+//      vector<unsigned int> ids = iit->second;
+//      for(unsigned int jj = 0; jj < ids.size(); ++jj) {
+//        // cout << ids[jj] << " ";
+//      }
+//      cout << endl;
+//    }
 
     // check algorithm preconditions
     if(hits.size() < 1) {
@@ -633,7 +632,7 @@ bool ReliefF::ComputeAttributeScores() {
         }
         W[scoresIdx] = W[scoresIdx] - hitSum + missSum;
         ++scoresIdx;
-      }
+      } // all numerics
     } // has numerics
 
     // happy lights
@@ -642,7 +641,7 @@ bool ReliefF::ComputeAttributeScores() {
     }
 
   } // number to randomly select
-  cout << Timestamp() << i << "/" << m << " done" << endl;
+  cout << Timestamp() << m << "/" << m << " done" << endl;
 
   return true;
 }
@@ -742,7 +741,6 @@ void ReliefF::PrintAttributeScores(ofstream & outFile) {
 }
 
 void ReliefF::WriteAttributeScores(string baseFilename) {
-
   string resultsFilename = baseFilename;
   if(dataset->HasContinuousPhenotypes()) {
     resultsFilename += ".rrelieff";
@@ -797,7 +795,7 @@ bool ReliefF::PreComputeDistances() {
               dataset->ComputeInstanceToInstanceDistance(
               dataset->GetInstance(dsi1Index),
               dataset->GetInstance(dsi2Index));
-      // cout << i << ", " << j << " => " << distanceMatrix[i][j] << endl;
+      //cout << i << ", " << j << " => " << distanceMatrix[i][j] << endl;
     }
     if(i && (i % 100 == 0)) {
       cout << Timestamp() << i << "/" << numInstances << endl;
@@ -920,7 +918,6 @@ AttributeScores ReliefF::ComputeScores() {
 }
 
 bool ReliefF::ComputeWeightByDistanceFactors() {
-
   vector<string> instanceIds = dataset->GetInstanceIds();
   for(unsigned int i = 0; i < dataset->NumInstances(); ++i) {
 

@@ -9,7 +9,7 @@ ACLOCAL_AMFLAGS="-Im4"
 AM_CXXFLAGS = -I$(top_srcdir) $(BOOST_CPPFLAGS) -fopenmp
 # AM_CXXFLAGS += -DHAVE__BOOL  -D__NOPLUGIN__
 AM_FFLAGS = $(my_include_paths)
-
+AM_CPPFLAGS=$(myincludes)
 my_ld_flags = $(LDFLAGS) -lgsl -lgslcblas $(BOOST_PROGRAM_OPTIONS_LIBS)
 my_ld_paths = -L$(top_srcdir)  
 
@@ -30,5 +30,3 @@ ReliefF.h RReliefF.h SNReliefF.h ReliefFSeq.h ReliefSeqController.h
 reliefseq_LDFLAGS = -fopenmp
 reliefseq_LDADD = $(my_ld_flags) $(my_ld_paths)
 
-# additional include paths to support the library headers
-INCLUDES = $(myincludes)

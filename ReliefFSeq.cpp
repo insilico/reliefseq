@@ -155,11 +155,16 @@ bool ReliefFSeq::ComputeAttributeScores() {
 	vector<unsigned int> numericIndices =
 			dataset->MaskGetAttributeIndices(NUMERIC_TYPE);
 	// DEBUG
-	//	string rawScoresFileName = dataset->GetNumericsFilename() + "_rawscores.tab";
-	//	ofstream outFile(rawScoresFileName.c_str());
-	//	outFile << "gene\tmuMiss\tmuHit\tsigmaMiss\tsigmaHit\tnum\tden\tdms0\tsnr" << endl;
+  string rawScoresFileName = dataset->GetNumericsFilename() + "_rawscores.tab";
+  ofstream outFile(rawScoresFileName);
+	if(mode == "snr") {
+    outFile << "gene\tmuMiss\tmuHit\tsigmaMiss\tsigmaHit\tnum\tden\tdms0\tsnr\alphaWeight" << endl;
+  } else {
+    outFile << "gene\tmuMiss\tmuHit\tsigmaMiss\tsigmaHit\tnum\tden\ttstat\tpval" << endl;
+  }
 
 	/// run this loop on as many cores as possible through OpenMP
+  double alphaWeight = 0.0;
 #pragma omp parallel for
 	for (unsigned int numIdx = 0; numIdx < numericIndices.size();
 			++numIdx) {
@@ -174,15 +179,17 @@ bool ReliefFSeq::ComputeAttributeScores() {
 		double sigmaDeltaMissAlpha = sigmaDeltaAlphas.second;
 		double snrNum = 0.0, snrDen = 0.0;
 		double tstatNum = 0.0, tstatDen = 0.0;
-		double alphaWeight = 0.0;
+#pragma omp critical
+{      
 		if(mode == "snr") {
+      cout << "SNR MODE" << endl;
 			// mode: snr (signal to noise ratio)
 			snrNum = fabs(muDeltaMissAlpha - muDeltaHitAlpha);
 			snrDen = sigmaDeltaMissAlpha + sigmaDeltaHitAlpha;
-//			outFile << numNames[numIdx]
-//					<< "\t" << muDeltaMissAlpha << "\t" << muDeltaHitAlpha
-//					<< "\t" << sigmaDeltaMissAlpha << "\t" << sigmaDeltaHitAlpha
-//					<< "\t" << num << "\t" << den << "\t" << (den + s0);
+			outFile << numNames[numIdx]
+					<< "\t" << muDeltaMissAlpha << "\t" << muDeltaHitAlpha
+					<< "\t" << sigmaDeltaMissAlpha << "\t" << sigmaDeltaHitAlpha
+					<< "\t" << snrNum << "\t" << snrDen << "\t" << (snrDen + s0);
 			if(snrMode == "snr") {
 				alphaWeight = snrNum / (snrDen + s0);
 			}
@@ -197,33 +204,36 @@ bool ReliefFSeq::ComputeAttributeScores() {
 			// (xbar1 – xbar2)/(Sp*sqrt(1/n1 + 1/n2)), 
 			// where Sp = pooled standard deviation=
 			// sqrt(((n1-1)*variance1 + (n2-1)*variance2)/(n1+n2-2)).
-			double n1, n2;
+ 			double n1, n2;
 			n1 = n2 = m * k;
 			double variance1 = sigmaDeltaHitAlpha;
 			double variance2 = sigmaDeltaMissAlpha;
-			double pooledStdDev =
+			double pooledVariance =
 					sqrt(((n1 - 1) * variance1 + (n2 - 1) * variance2) / (n1 + n2 - 2));
 			tstatNum = muDeltaMissAlpha - muDeltaHitAlpha;
-			tstatDen = pooledStdDev * sqrt((1.0 / n1) + (1.0 / n2));
+			tstatDen = pooledVariance * sqrt((1.0 / n1) + (1.0 / n2));
 			// make into a t-statistic and use for pvalue
 			double t = tstatNum / (tstatDen + s0);
-//#pragma omp critical
-//			cout << numNames[numIdx]
-//					<< "\t" << muDeltaMissAlpha << "\t" << muDeltaHitAlpha
-//					<< "\t" << sigmaDeltaMissAlpha << "\t" << sigmaDeltaHitAlpha
-//					<< "\t" << tstatNum << "\t" << tstatDen << "\t" << t << endl;
+      outFile << numNames[numIdx]
+          << "\t" << muDeltaMissAlpha << "\t" << muDeltaHitAlpha
+          << "\t" << sigmaDeltaMissAlpha << "\t" << sigmaDeltaHitAlpha
+          << "\t" << tstatNum << "\t" << tstatDen << "\t" << t;
+
 			double df =  n1 + n2 - 2;
 			double gslPval = 1.0;
 			if(t < 0) {
-				gslPval = gsl_cdf_tdist_P(-t, df);
+				//gslPval = gsl_cdf_tdist_P(-t, df);
+        gslPval = gsl_cdf_tdist_Q(-t, df);
 			}
 			else {
-				gslPval = gsl_cdf_tdist_P(t, df);
+				//gslPval = gsl_cdf_tdist_P(t, df);
+        gslPval = gsl_cdf_tdist_Q(t, df);
 			}
 			// assign the variable a weight for ReliefF
 			if(tstatMode == "pval") {
-				// use 1-pvalue as the attribute scrore
-				alphaWeight = 1.0 - (2.0 * (1.0 - gslPval));
+				// use 1-pvalue as the attribute score
+				//alphaWeight = 1.0 - (2.0 * (1.0 - gslPval));
+        alphaWeight = 2.0 * gslPval;
 			}
 			else {
 				if(tstatMode == "abst") {
@@ -238,13 +248,14 @@ bool ReliefFSeq::ComputeAttributeScores() {
 		}
 	
 		/// assign a weight to this variable index
-		W[numIdx] = alphaWeight;
-		// DEBUG
-		// outFile << "\t" << W[numIdx] << endl;
+      W[numIdx] = alphaWeight;
+      // DEBUG
+      outFile << "\t" << W[numIdx] << endl;
+} // end critical section
 	} // for all gene alpha
 
 	// DEBUG
-	// outFile.close();
+	outFile.close();
 
 	return true;
 }
@@ -324,8 +335,8 @@ pair<double, double> ReliefFSeq::SigmaDeltaAlphas(unsigned int alpha,
 	// return the standard deviation of the hit and miss diffs
 	pair<double, double> returnValues;
 	double avgFactor = 1.0 / ((double) m * (double) k);
-	returnValues.first = sqrt(hitSum * avgFactor);
-	returnValues.second = sqrt(missSum * avgFactor);
+	returnValues.first = hitSum * avgFactor;
+	returnValues.second = missSum * avgFactor;
 
 	return returnValues;
 }
